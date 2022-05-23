@@ -41,7 +41,8 @@ class AltinnRestClient(
         )
     }
 
-    private val baseUrl = "$altinnBaseUrl/reportees/?ForceEIAuthentication&\$filter=Type+ne+'Person'+and+Status+eq+'Active'&serviceCode=$serviceCode&serviceEdition=1&&subject="
+    private val baseUrl = "$altinnBaseUrl/reportees/?ForceEIAuthentication&\$filter=Type+ne+'Person'+and+Status+eq+'Active'&" +
+        "serviceCode=$serviceCode&serviceEdition=1&&subject="
 
     /**
      * @return en liste over organisasjoner og/eller personer den angitte personen har rettigheten for
