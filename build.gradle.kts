@@ -6,6 +6,7 @@ val logbackVersion: String by project
 val mockkVersion: String by project
 val nimbusJoseJwtVersion: String by project
 val helsearbeidsgiverTokenproviderVersion: String by project
+val jacksonVersion = "2.11.2"
 
 val githubPassword: String by project
 
@@ -63,6 +64,10 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("com.nimbusds:nimbus-jose-jwt:$nimbusJoseJwtVersion")
     implementation("no.nav.helsearbeidsgiver:helsearbeidsgiver-tokenprovider:$helsearbeidsgiverTokenproviderVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
 }
