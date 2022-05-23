@@ -7,7 +7,7 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.http.*
 
 fun mockHttpClient(status: HttpStatusCode, content: String): HttpClient {
-    val mockEngine = MockEngine { request ->
+    val mockEngine = MockEngine { _ ->
         respond(
             content = content,
             status = status,
@@ -19,7 +19,6 @@ fun mockHttpClient(status: HttpStatusCode, content: String): HttpClient {
             serializer = KotlinxSerializer(
                 kotlinx.serialization.json.Json {
                     ignoreUnknownKeys = true
-                    explicitNulls = false
                 }
             )
         }
