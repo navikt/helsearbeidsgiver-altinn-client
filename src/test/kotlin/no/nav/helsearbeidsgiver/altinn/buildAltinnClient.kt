@@ -13,6 +13,6 @@ internal fun buildClient(status: HttpStatusCode, content: String): AltinnRestCli
     )
 }
 
-val validAltinnResponse = "altinn-mock-data/organisasjoner-med-rettighet.json".loadFromResources()
+val validAltinnResponse = "organisasjoner-med-rettighet.json".loadFromResources()
 
 val identitetsnummer = "01020354321"

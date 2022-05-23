@@ -1,5 +1,7 @@
 package no.nav.helsearbeidsgiver.altinn
 
+import kotlinx.serialization.Serializable
+
 /**
  * En organisasjon slik de blir returnert fra Altinn.
 
@@ -14,6 +16,7 @@ package no.nav.helsearbeidsgiver.altinn
  * TypeOfOrganization	String	The type of organization for the reportee. This is populated only if the reportee is an organization. E.g ENK, AS, ORGL.
  * SocialSecurityNumber	String	The social security number of the reportee. This is populated only if the reportee is a person.
  */
+@Serializable
 data class AltinnOrganisasjon(
     val name: String,
     val type: String,

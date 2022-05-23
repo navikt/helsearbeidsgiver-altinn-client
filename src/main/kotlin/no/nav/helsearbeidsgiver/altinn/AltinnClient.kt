@@ -73,7 +73,7 @@ class AltinnRestClient(
                     is ServerResponseException -> {
                         // midlertidig hook for å detektere at det tok for lang tid å hente rettigheter
                         // brukeren/klienten kan prøve igjen når dette skjer siden altinn svarer raskere gang nummer 2
-                        if (ex.response!!.status == HttpStatusCode.BadGateway) {
+                        if (ex.response.status == HttpStatusCode.BadGateway) {
                             logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", ex)
                             throw AltinnBrukteForLangTidException()
                         } else throw ex
