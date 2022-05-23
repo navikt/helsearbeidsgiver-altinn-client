@@ -2,11 +2,11 @@ package no.nav.helsearbeidsgiver.altinn
 
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.features.json.*
 import io.ktor.http.*
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 
 fun mockHttpClient(status: HttpStatusCode, content: String): HttpClient {
     val mockEngine = MockEngine { _ ->
