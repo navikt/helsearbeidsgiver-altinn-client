@@ -28,7 +28,7 @@ sonarqube {
 }
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.1.10"
+version = "0.1.11"
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
