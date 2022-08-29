@@ -1,1 +1,0 @@
-# helsearbeidsgiver-norg2

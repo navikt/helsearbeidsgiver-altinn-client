@@ -1,6 +1,6 @@
 package no.nav.helsearbeidsgiver.altinn
 
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 
 internal fun buildClient(status: HttpStatusCode, content: String): AltinnRestClient {
     return AltinnRestClient(

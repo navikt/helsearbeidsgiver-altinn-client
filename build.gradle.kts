@@ -1,46 +1,29 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ktorVersion: String by project
-val kotlinVersion: String by project
-val logbackVersion: String by project
-val mockkVersion: String by project
-val nimbusJoseJwtVersion: String by project
-val helsearbeidsgiverTokenproviderVersion: String by project
-val jacksonVersion = "2.11.2"
-
-val githubPassword: String by project
+group = "no.nav.helsearbeidsgiver"
+version = "0.1.11"
 
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jmailen.kotlinter")
-    id("org.sonarqube") version "2.8"
+    id("org.sonarqube")
     id("maven-publish")
 }
 
-sonarqube {
-    properties {
-        property("sonar.projectKey", "navikt_helsearbeidsgiver-altinn-client")
-        property("sonar.organization", "navikt")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.login", System.getenv("SONAR_TOKEN"))
-    }
-}
-
-group = "no.nav.helsearbeidsgiver"
-version = "0.1.11"
-
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "11"
-}
-
 tasks {
-    test {
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
+
+    withType<Test> {
         useJUnitPlatform()
     }
 }
 
 repositories {
+    val githubPassword: String by project
+
     mavenCentral()
     maven {
         credentials {
@@ -68,22 +51,35 @@ publishing {
     }
 }
 
-dependencies {
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-json:$ktorVersion")
-    implementation("io.ktor:ktor-client-serialization:$ktorVersion")
-    implementation("com.nimbusds:nimbus-jose-jwt:$nimbusJoseJwtVersion")
-    implementation("no.nav.helsearbeidsgiver:tokenprovider:$helsearbeidsgiverTokenproviderVersion")
-    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jacksonVersion")
-    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-    testImplementation("io.ktor:ktor-client-jackson:$ktorVersion")
-    testImplementation(kotlin("test"))
-    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
+sonarqube {
+    properties {
+        property("sonar.projectKey", "navikt_helsearbeidsgiver-altinn-client")
+        property("sonar.organization", "navikt")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.login", System.getenv("SONAR_TOKEN"))
+    }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-    }
+dependencies {
+    val coroutinesVersion: String by project
+    val jacksonVersion: String by project
+    val kotestVersion: String by project
+    val kotlinSerializationVersion: String by project
+    val ktorVersion: String by project
+    val slf4jVersion: String by project
+
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
+
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-http:$ktorVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.slf4j:slf4j-api:$slf4jVersion")
+
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
+    testImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 }
