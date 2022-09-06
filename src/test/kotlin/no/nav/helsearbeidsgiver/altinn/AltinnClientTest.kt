@@ -1,31 +1,28 @@
 package no.nav.helsearbeidsgiver.altinn
 
-import io.ktor.client.features.*
-import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Test
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.ints.shouldBeExactly
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.http.HttpStatusCode
 
-class AltinnClientTest {
+class AltinnClientTest : StringSpec({
 
-    @Test
-    internal fun `valid answer from altinn returns properly serialized list of all active org forms`() {
+    "valid answer from altinn returns properly serialized list of all active org forms" {
         val authList = buildClient(HttpStatusCode.OK, validAltinnResponse).hentOrgMedRettigheterForPerson(identitetsnummer)
-        assertEquals(4, authList.size)
+
+        authList.size shouldBeExactly 4
     }
 
-    @Test
-    internal fun `timeout from altinn throws exception`() {
-        assertThrows(ServerResponseException::class.java) {
+    "timeout from altinn throws exception" {
+        shouldThrowExactly<ServerResponseException> {
             buildClient(HttpStatusCode.GatewayTimeout, "").hentOrgMedRettigheterForPerson(identitetsnummer)
         }
     }
 
-    @Test
-    internal fun `timeout from altinn throws AltinnBrukteForLangTidException`() {
-        assertThrows(AltinnBrukteForLangTidException::class.java) {
-            runBlocking { buildClient(HttpStatusCode.BadGateway, "").hentOrgMedRettigheterForPerson(identitetsnummer) }
+    "timeout from altinn throws AltinnBrukteForLangTidException" {
+        shouldThrowExactly<AltinnBrukteForLangTidException> {
+            buildClient(HttpStatusCode.BadGateway, "").hentOrgMedRettigheterForPerson(identitetsnummer)
         }
     }
-}
+})

@@ -1,14 +1,15 @@
 package no.nav.helsearbeidsgiver.altinn
 
-import io.ktor.client.*
-import io.ktor.client.features.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.expectSuccess
+import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.concurrent.CancellationException
 
 /**
  * Klient som benytter Altinns REST API for å hente organisasjoner som en gitt bruker har tilgang til for den gitte tjenesten.
@@ -28,7 +29,7 @@ class AltinnRestClient(
     private val pageSize: Int = 500
 ) : AltinnOrganisationsRepository {
 
-    private val logger: org.slf4j.Logger = LoggerFactory.getLogger("AltinnClient")
+    private val logger = LoggerFactory.getLogger("AltinnClient")
 
     init {
         logger.debug(
@@ -58,31 +59,27 @@ class AltinnRestClient(
                 var page = 0
                 do {
                     val urlWithPagesizeAndOffset = url + "&\$top=" + pageSize + "&\$skip=" + page * pageSize
-                    val pageResults = httpClient.get<Set<AltinnOrganisasjon>>(urlWithPagesizeAndOffset) {
+                    val pageResults = httpClient.get(urlWithPagesizeAndOffset) {
+                        expectSuccess = true
                         headers.append("X-NAV-APIKEY", apiGwApiKey)
                         headers.append("APIKEY", altinnApiKey)
                     }
+                        .body<Set<AltinnOrganisasjon>>()
                     allAccessRights.addAll(pageResults)
                     page++
                 } while (pageResults.size >= pageSize)
 
                 logger.debug("Altinn brukte ${Duration.between(start, LocalDateTime.now()).toMillis()}ms på å svare med ${allAccessRights.size} rettigheter")
                 return@runBlocking allAccessRights
-            } catch (ex: Exception) {
-                when (ex) {
-                    is ServerResponseException -> {
+            } catch (e: Exception) {
+                when {
+                    e is ServerResponseException && e.response.status == HttpStatusCode.BadGateway -> {
                         // midlertidig hook for å detektere at det tok for lang tid å hente rettigheter
                         // brukeren/klienten kan prøve igjen når dette skjer siden altinn svarer raskere gang nummer 2
-                        if (ex.response.status == HttpStatusCode.BadGateway) {
-                            logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", ex)
-                            throw AltinnBrukteForLangTidException()
-                        } else throw ex
-                    }
-                    is CancellationException -> {
-                        logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", ex)
+                        logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", e)
                         throw AltinnBrukteForLangTidException()
                     }
-                    else -> throw ex
+                    else -> throw e
                 }
             }
         }
