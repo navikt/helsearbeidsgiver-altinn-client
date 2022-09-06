@@ -58,11 +58,13 @@ dependencies {
     val kotlinSerializationVersion: String by project
     val ktorVersion: String by project
     val slf4jVersion: String by project
+    val utilsVersion: String by project
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
     api("io.ktor:ktor-client-core:$ktorVersion")
 
     implementation("io.ktor:ktor-http:$ktorVersion")
+    implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
 

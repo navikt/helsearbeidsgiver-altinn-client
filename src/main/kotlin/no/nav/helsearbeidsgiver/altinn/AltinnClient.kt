@@ -7,9 +7,12 @@ import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
-import org.slf4j.LoggerFactory
-import java.time.Duration
-import java.time.LocalDateTime
+import no.nav.helsearbeidsgiver.utils.cache.LocalCache
+import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
+import no.nav.helsearbeidsgiver.utils.log.logger
+import kotlin.time.Duration
+
+private const val PAGE_SIZE = 500
 
 /**
  * Klient som benytter Altinns REST API for å hente organisasjoner som en gitt bruker har tilgang til for den gitte tjenesten.
@@ -18,73 +21,104 @@ import java.time.LocalDateTime
  *
  * For å få tilgang til dette APIet må det settes opp tilgang gjennom API-Gateway til tjenesten (vi går ikke mot den offesielle Altinn URLen).
  * For hjelp med dette spør i #apigw
- *
  */
-class AltinnRestClient(
-    altinnBaseUrl: String,
+class AltinnClient(
+    private val altinnBaseUrl: String,
+    private val serviceCode: String,
     private val apiGwApiKey: String,
     private val altinnApiKey: String,
-    serviceCode: String,
     private val httpClient: HttpClient,
-    private val pageSize: Int = 500
-) : AltinnOrganisationsRepository {
+    cacheConfig: CacheConfig? = null
+) {
+    private val logger = this.logger()
 
-    private val logger = LoggerFactory.getLogger("AltinnClient")
+    private val cache = cacheConfig?.let {
+        LocalCache<Set<AltinnOrganisasjon>>(it.entryDuration, it.maxEntries)
+    }
 
     init {
         logger.debug(
             """Altinn Config:
                     altinnBaseUrl: $altinnBaseUrl
+                    serviceCode: $serviceCode
                     apiGwApiKey: ${apiGwApiKey.take(1)}.....
                     altinnApiKey: ${altinnApiKey.take(1)}.....
-                    serviceCode: $serviceCode
             """.trimIndent()
         )
     }
 
-    private val baseUrl = "$altinnBaseUrl/reportees/?ForceEIAuthentication&\$filter=Type+ne+'Person'+and+Status+eq+'Active'&" +
-        "serviceCode=$serviceCode&serviceEdition=1&&subject="
+    /**
+     * Sjekker om [identitetsnummer] har rettighet til å se refusjoner for [organisasjonId], og om [organisasjonId] er en underenhet (virksomhet).
+     *
+     * @param organisasjonId Kan være virksomhet, hovedenhet, privatperson eller organisasjonsledd.
+     */
+    fun harRettighetForOrganisasjon(identitetsnummer: String, organisasjonId: String): Boolean =
+        hentRettighetOrganisasjoner(identitetsnummer)
+            .any {
+                it.organizationNumber == organisasjonId &&
+                    it.parentOrganizationNumber != null
+            }
 
     /**
-     * @return en liste over organisasjoner og/eller personer den angitte personen har rettigheten for
+     * @return Liste over organisasjoner og/eller personer hvor den angitte personen har tilknyttede rettigheter.
      */
-    override fun hentOrgMedRettigheterForPerson(identitetsnummer: String): Set<AltinnOrganisasjon> {
-        logger.debug("Henter organisasjoner for ${identitetsnummer.take(5)}XXXXX")
+    fun hentRettighetOrganisasjoner(identitetsnummer: String): Set<AltinnOrganisasjon> =
+        cache.getIfCacheNotNull(identitetsnummer) {
+            logger.debug("Henter organisasjoner for ${identitetsnummer.take(5)}XXXXX")
 
-        val url = baseUrl + identitetsnummer
-        return runBlocking {
-            try {
-                val allAccessRights = HashSet<AltinnOrganisasjon>()
-                val start = LocalDateTime.now()
-                var page = 0
-                do {
-                    val urlWithPagesizeAndOffset = url + "&\$top=" + pageSize + "&\$skip=" + page * pageSize
-                    val pageResults = httpClient.get(urlWithPagesizeAndOffset) {
-                        expectSuccess = true
-                        headers.append("X-NAV-APIKEY", apiGwApiKey)
-                        headers.append("APIKEY", altinnApiKey)
-                    }
-                        .body<Set<AltinnOrganisasjon>>()
-                    allAccessRights.addAll(pageResults)
-                    page++
-                } while (pageResults.size >= pageSize)
+            val callStart = System.currentTimeMillis()
 
-                logger.debug("Altinn brukte ${Duration.between(start, LocalDateTime.now()).toMillis()}ms på å svare med ${allAccessRights.size} rettigheter")
-                return@runBlocking allAccessRights
-            } catch (e: Exception) {
-                when {
-                    e is ServerResponseException && e.response.status == HttpStatusCode.BadGateway -> {
-                        // midlertidig hook for å detektere at det tok for lang tid å hente rettigheter
-                        // brukeren/klienten kan prøve igjen når dette skjer siden altinn svarer raskere gang nummer 2
-                        logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", e)
-                        throw AltinnBrukteForLangTidException()
-                    }
-                    else -> throw e
+            val rettighetOrganisasjoner = hashSetOf<AltinnOrganisasjon>()
+            var pageNo = 0
+
+            do {
+                val rettighetOrganisasjonerForPage = hentRettighetOrganisasjonerForPage(identitetsnummer, pageNo)
+
+                rettighetOrganisasjoner.addAll(rettighetOrganisasjonerForPage)
+
+                pageNo++
+            } while (rettighetOrganisasjonerForPage.size >= PAGE_SIZE)
+
+            logger.debug("Altinn brukte ${System.currentTimeMillis() - callStart} ms på å svare med ${rettighetOrganisasjoner.size} rettigheter")
+
+            rettighetOrganisasjoner
+        }
+
+    private fun hentRettighetOrganisasjonerForPage(id: String, pageNo: Int): Set<AltinnOrganisasjon> {
+        val url = buildUrl(id, pageNo)
+        return try {
+            runBlocking {
+                httpClient.get(url) {
+                    expectSuccess = true
+                    headers.append("X-NAV-APIKEY", apiGwApiKey)
+                    headers.append("APIKEY", altinnApiKey)
                 }
+                    .body()
             }
+        } catch (e: ServerResponseException) {
+            if (e.response.status == HttpStatusCode.BadGateway) {
+                // Midlertidig hook for å detektere at det tok for lang tid å hente rettigheter
+                // Brukeren/klienten kan prøve igjen når dette skjer siden altinn svarer raskere gang nummer 2
+                logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", e)
+                throw AltinnBrukteForLangTidException()
+            } else throw e
         }
     }
+
+    private fun buildUrl(id: String, pageNo: Int) = "$altinnBaseUrl/reportees/" +
+        "?ForceEIAuthentication" +
+        "&\$filter=Type+ne+'Person'+and+Status+eq+'Active'" +
+        "&serviceCode=$serviceCode" +
+        "&serviceEdition=1" +
+        "&subject=$id" +
+        "&\$top=$PAGE_SIZE" +
+        "&\$skip=${pageNo * PAGE_SIZE}"
 }
+
+data class CacheConfig(
+    val entryDuration: Duration,
+    val maxEntries: Int
+)
 
 class AltinnBrukteForLangTidException : Exception(
     "Altinn brukte for lang tid til å svare på forespørselen om tilganger. Prøv igjen om litt."
