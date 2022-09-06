@@ -15,23 +15,29 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "11"
     }
-
-    withType<Test> {
+    test {
         useJUnitPlatform()
     }
 }
 
-repositories {
-    val githubPassword: String by project
+java {
+    withSourcesJar()
+}
 
-    mavenCentral()
-    maven {
-        credentials {
-            username = System.getenv("GITHUB_ACTOR") ?: "x-access-token"
-            password = System.getenv("GITHUB_TOKEN") ?: githubPassword
-        }
-        setUrl("https://maven.pkg.github.com/navikt/*")
+sonarqube {
+    val sonarToken: String by project
+
+    properties {
+        property("sonar.projectKey", "navikt_helsearbeidsgiver-${rootProject.name}")
+        property("sonar.organization", "navikt")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.login", sonarToken)
     }
+}
+
+repositories {
+    mavenCentral()
+    mavenNav("*")
 }
 
 publishing {
@@ -41,22 +47,7 @@ publishing {
         }
     }
     repositories {
-        maven {
-            url = uri("https://maven.pkg.github.com/navikt/helsearbeidsgiver-${rootProject.name}")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-}
-
-sonarqube {
-    properties {
-        property("sonar.projectKey", "navikt_helsearbeidsgiver-altinn-client")
-        property("sonar.organization", "navikt")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.login", System.getenv("SONAR_TOKEN"))
+        mavenNav("helsearbeidsgiver-${rootProject.name}")
     }
 }
 
@@ -82,4 +73,16 @@ dependencies {
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+}
+
+fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
+    val githubPassword: String by project
+
+    return maven {
+        setUrl("https://maven.pkg.github.com/navikt/$repo")
+        credentials {
+            username = "x-access-token"
+            password = githubPassword
+        }
+    }
 }
