@@ -1,10 +1,9 @@
 package no.nav.helsearbeidsgiver.altinn
 
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
@@ -23,14 +22,15 @@ private const val PAGE_SIZE = 500
  * For hjelp med dette spør i #apigw
  */
 class AltinnClient(
-    private val altinnBaseUrl: String,
+    private val baseUrl: String,
     private val serviceCode: String,
     private val apiGwApiKey: String,
     private val altinnApiKey: String,
-    private val httpClient: HttpClient,
     cacheConfig: CacheConfig? = null
 ) {
     private val logger = this.logger()
+
+    private val httpClient = createHttpClient()
 
     private val cache = cacheConfig?.let {
         LocalCache<Set<AltinnOrganisasjon>>(it.entryDuration, it.maxEntries)
@@ -39,7 +39,7 @@ class AltinnClient(
     init {
         logger.debug(
             """Altinn Config:
-                    altinnBaseUrl: $altinnBaseUrl
+                    altinnBaseUrl: $baseUrl
                     serviceCode: $serviceCode
                     apiGwApiKey: ${apiGwApiKey.take(1)}.....
                     altinnApiKey: ${altinnApiKey.take(1)}.....
@@ -89,9 +89,8 @@ class AltinnClient(
         return try {
             runBlocking {
                 httpClient.get(url) {
-                    expectSuccess = true
-                    headers.append("X-NAV-APIKEY", apiGwApiKey)
-                    headers.append("APIKEY", altinnApiKey)
+                    header("X-NAV-APIKEY", apiGwApiKey)
+                    header("APIKEY", altinnApiKey)
                 }
                     .body()
             }
@@ -105,7 +104,7 @@ class AltinnClient(
         }
     }
 
-    private fun buildUrl(id: String, pageNo: Int) = "$altinnBaseUrl/reportees/" +
+    private fun buildUrl(id: String, pageNo: Int) = "$baseUrl/reportees/" +
         "?ForceEIAuthentication" +
         "&\$filter=Type+ne+'Person'+and+Status+eq+'Active'" +
         "&serviceCode=$serviceCode" +
