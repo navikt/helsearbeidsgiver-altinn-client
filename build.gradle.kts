@@ -52,29 +52,29 @@ publishing {
 }
 
 dependencies {
-    val coroutinesVersion: String by project
     val jacksonVersion: String by project
     val kotestVersion: String by project
     val kotlinSerializationVersion: String by project
     val ktorVersion: String by project
+    val mockkVersion: String by project
     val slf4jVersion: String by project
     val utilsVersion: String by project
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
-    api("io.ktor:ktor-client-core:$ktorVersion")
 
-    implementation("io.ktor:ktor-http:$ktorVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
 
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
-    testImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
 fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {

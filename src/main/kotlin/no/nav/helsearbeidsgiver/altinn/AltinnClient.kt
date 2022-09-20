@@ -1,12 +1,10 @@
 package no.nav.helsearbeidsgiver.altinn
 
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.runBlocking
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
 import no.nav.helsearbeidsgiver.utils.log.logger
@@ -23,14 +21,15 @@ private const val PAGE_SIZE = 500
  * For hjelp med dette spør i #apigw
  */
 class AltinnClient(
-    private val altinnBaseUrl: String,
+    private val url: String,
     private val serviceCode: String,
     private val apiGwApiKey: String,
     private val altinnApiKey: String,
-    private val httpClient: HttpClient,
     cacheConfig: CacheConfig? = null
 ) {
     private val logger = this.logger()
+
+    private val httpClient = createHttpClient()
 
     private val cache = cacheConfig?.let {
         LocalCache<Set<AltinnOrganisasjon>>(it.entryDuration, it.maxEntries)
@@ -38,8 +37,8 @@ class AltinnClient(
 
     init {
         logger.debug(
-            """Altinn Config:
-                    altinnBaseUrl: $altinnBaseUrl
+            """AltinnClient-config:
+                    url: $url
                     serviceCode: $serviceCode
                     apiGwApiKey: ${apiGwApiKey.take(1)}.....
                     altinnApiKey: ${altinnApiKey.take(1)}.....
@@ -52,7 +51,7 @@ class AltinnClient(
      *
      * @param organisasjonId Kan være virksomhet, hovedenhet, privatperson eller organisasjonsledd.
      */
-    fun harRettighetForOrganisasjon(identitetsnummer: String, organisasjonId: String): Boolean =
+    suspend fun harRettighetForOrganisasjon(identitetsnummer: String, organisasjonId: String): Boolean =
         hentRettighetOrganisasjoner(identitetsnummer)
             .any {
                 it.organizationNumber == organisasjonId &&
@@ -62,7 +61,7 @@ class AltinnClient(
     /**
      * @return Liste over organisasjoner og/eller personer hvor den angitte personen har tilknyttede rettigheter.
      */
-    fun hentRettighetOrganisasjoner(identitetsnummer: String): Set<AltinnOrganisasjon> =
+    suspend fun hentRettighetOrganisasjoner(identitetsnummer: String): Set<AltinnOrganisasjon> =
         cache.getIfCacheNotNull(identitetsnummer) {
             logger.debug("Henter organisasjoner for ${identitetsnummer.take(5)}XXXXX")
 
@@ -84,17 +83,14 @@ class AltinnClient(
             rettighetOrganisasjoner
         }
 
-    private fun hentRettighetOrganisasjonerForPage(id: String, pageNo: Int): Set<AltinnOrganisasjon> {
+    private suspend fun hentRettighetOrganisasjonerForPage(id: String, pageNo: Int): Set<AltinnOrganisasjon> {
         val url = buildUrl(id, pageNo)
         return try {
-            runBlocking {
-                httpClient.get(url) {
-                    expectSuccess = true
-                    headers.append("X-NAV-APIKEY", apiGwApiKey)
-                    headers.append("APIKEY", altinnApiKey)
-                }
-                    .body()
+            httpClient.get(url) {
+                header("X-NAV-APIKEY", apiGwApiKey)
+                header("APIKEY", altinnApiKey)
             }
+                .body()
         } catch (e: ServerResponseException) {
             if (e.response.status == HttpStatusCode.BadGateway) {
                 // Midlertidig hook for å detektere at det tok for lang tid å hente rettigheter
@@ -105,7 +101,7 @@ class AltinnClient(
         }
     }
 
-    private fun buildUrl(id: String, pageNo: Int) = "$altinnBaseUrl/reportees/" +
+    private fun buildUrl(id: String, pageNo: Int) = "$url/reportees/" +
         "?ForceEIAuthentication" +
         "&\$filter=Type+ne+'Person'+and+Status+eq+'Active'" +
         "&serviceCode=$serviceCode" +
