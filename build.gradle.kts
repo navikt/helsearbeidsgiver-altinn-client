@@ -52,7 +52,6 @@ publishing {
 }
 
 dependencies {
-    val jacksonVersion: String by project
     val kotestVersion: String by project
     val kotlinSerializationVersion: String by project
     val ktorVersion: String by project
@@ -60,15 +59,12 @@ dependencies {
     val slf4jVersion: String by project
     val utilsVersion: String by project
 
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
-
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
 
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")

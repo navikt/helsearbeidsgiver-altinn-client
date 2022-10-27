@@ -1,6 +1,7 @@
 package no.nav.helsearbeidsgiver.altinn
 
 import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.row
 import io.kotest.matchers.ints.shouldBeExactly
@@ -22,8 +23,10 @@ class AltinnClientTest : StringSpec({
             row("123456789", false) // Er ikke i listen fra responsen
         )
             .forEach { (orgnr, expected) ->
-                altinnClient.harRettighetForOrganisasjon(IDENTITETSNUMMER, orgnr)
-                    .shouldBe(expected)
+                withClue("$orgnr should yield $expected") {
+                    altinnClient.harRettighetForOrganisasjon(IDENTITETSNUMMER, orgnr)
+                        .shouldBe(expected)
+                }
             }
     }
 
