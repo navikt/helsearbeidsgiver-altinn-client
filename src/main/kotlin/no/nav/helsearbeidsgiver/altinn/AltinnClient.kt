@@ -54,8 +54,8 @@ class AltinnClient(
     suspend fun harRettighetForOrganisasjon(identitetsnummer: String, organisasjonId: String): Boolean =
         hentRettighetOrganisasjoner(identitetsnummer)
             .any {
-                it.organizationNumber == organisasjonId &&
-                    it.parentOrganizationNumber != null
+                it.orgnr == organisasjonId &&
+                    it.orgnrHovedenhet != null
             }
 
     /**
@@ -90,14 +90,18 @@ class AltinnClient(
                 header("X-NAV-APIKEY", apiGwApiKey)
                 header("APIKEY", altinnApiKey)
             }
-                .body()
+                .body<Set<AltinnOrganisasjon>>()
+                .map(AltinnOrganisasjon::nullEmptyStrings)
+                .toSet()
         } catch (e: ServerResponseException) {
             if (e.response.status == HttpStatusCode.BadGateway) {
                 // Midlertidig hook for å detektere at det tok for lang tid å hente rettigheter
                 // Brukeren/klienten kan prøve igjen når dette skjer siden altinn svarer raskere gang nummer 2
                 logger.warn("Fikk en timeout fra Altinn som vi antar er fiksbar lagg hos dem", e)
                 throw AltinnBrukteForLangTidException()
-            } else throw e
+            } else {
+                throw e
+            }
         }
     }
 
