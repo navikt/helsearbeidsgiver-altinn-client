@@ -54,8 +54,8 @@ class AltinnClient(
     suspend fun harRettighetForOrganisasjon(identitetsnummer: String, organisasjonId: String): Boolean =
         hentRettighetOrganisasjoner(identitetsnummer)
             .any {
-                it.orgNo == organisasjonId &&
-                    it.orgNoParent != null
+                it.orgnr == organisasjonId &&
+                    it.orgnrHovedenhet != null
             }
 
     /**
