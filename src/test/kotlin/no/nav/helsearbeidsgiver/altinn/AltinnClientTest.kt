@@ -8,6 +8,7 @@ import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
+import no.nav.helsearbeidsgiver.utils.test.resource.readResource
 
 private const val IDENTITETSNUMMER = "01020354321"
 
@@ -54,6 +55,3 @@ class AltinnClientTest : StringSpec({
         }
     }
 })
-
-private fun String.readResource(): String =
-    ClassLoader.getSystemResource(this).readText()
