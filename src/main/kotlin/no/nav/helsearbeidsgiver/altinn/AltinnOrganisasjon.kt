@@ -33,14 +33,14 @@ data class AltinnOrganisasjon(
     @JsonNames("Status")
     val status: String? = null,
     @JsonNames("ParentOrganizationNumber")
-    val orgnrHovedenhet: String? = null
+    val orgnrHovedenhet: String? = null,
 ) {
     internal fun nullEmptyStrings(): AltinnOrganisasjon =
         copy(
             orgnr = orgnr?.orNull(),
             orgForm = orgForm?.orNull(),
             status = status?.orNull(),
-            orgnrHovedenhet = orgnrHovedenhet?.orNull()
+            orgnrHovedenhet = orgnrHovedenhet?.orNull(),
         )
 }
 

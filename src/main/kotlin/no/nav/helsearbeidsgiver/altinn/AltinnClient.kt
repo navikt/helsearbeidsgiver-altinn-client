@@ -25,7 +25,7 @@ class AltinnClient(
     private val serviceCode: String,
     private val apiGwApiKey: String,
     private val altinnApiKey: String,
-    cacheConfig: CacheConfig? = null
+    cacheConfig: CacheConfig? = null,
 ) {
     private val logger = this.logger()
 
@@ -42,7 +42,7 @@ class AltinnClient(
                     serviceCode: $serviceCode
                     apiGwApiKey: ${apiGwApiKey.take(1)}.....
                     altinnApiKey: ${altinnApiKey.take(1)}.....
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
@@ -117,9 +117,9 @@ class AltinnClient(
 
 data class CacheConfig(
     val entryDuration: Duration,
-    val maxEntries: Int
+    val maxEntries: Int,
 )
 
 class AltinnBrukteForLangTidException : Exception(
-    "Altinn brukte for lang tid til å svare på forespørselen om tilganger. Prøv igjen om litt."
+    "Altinn brukte for lang tid til å svare på forespørselen om tilganger. Prøv igjen om litt.",
 )

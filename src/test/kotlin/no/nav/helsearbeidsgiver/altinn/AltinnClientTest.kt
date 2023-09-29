@@ -20,7 +20,7 @@ class AltinnClientTest : StringSpec({
         listOf(
             row("910098896", true),
             row("910020102", false), // Mangler hovedenhet
-            row("123456789", false) // Er ikke i listen fra responsen
+            row("123456789", false), // Er ikke i listen fra responsen
         )
             .forEach { (orgnr, expected) ->
                 withClue("$orgnr should yield $expected") {

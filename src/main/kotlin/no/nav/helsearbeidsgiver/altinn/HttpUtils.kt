@@ -17,7 +17,7 @@ internal fun HttpClientConfig<*>.customize() {
         json(
             Json {
                 ignoreUnknownKeys = true
-            }
+            },
         )
     }
 }
