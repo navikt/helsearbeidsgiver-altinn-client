@@ -7,7 +7,6 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jmailen.kotlinter")
-    id("org.sonarqube")
     id("maven-publish")
 }
 
@@ -22,17 +21,6 @@ tasks {
 
 java {
     withSourcesJar()
-}
-
-sonarqube {
-    val sonarToken: String by project
-
-    properties {
-        property("sonar.projectKey", "navikt_helsearbeidsgiver-${rootProject.name}")
-        property("sonar.organization", "navikt")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.login", sonarToken)
-    }
 }
 
 repositories {
