@@ -15,7 +15,7 @@ fun mockAltinnClient(status: HttpStatusCode, content: String = ""): AltinnClient
         respond(
             content = content,
             status = status,
-            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
         )
     }
 
