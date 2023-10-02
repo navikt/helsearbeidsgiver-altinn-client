@@ -25,4 +25,3 @@ jobs:
         run: ./gradlew build publish
         env:
           ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
-          ORG_GRADLE_PROJECT_sonarToken: ${{ secrets.SONAR_TOKEN }}
