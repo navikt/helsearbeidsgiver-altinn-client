@@ -31,6 +31,10 @@ repositories {
     mavenNav("*")
 }
 
+tasks.register("printVersion") {
+    printVersion()
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -76,3 +80,4 @@ fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
         }
     }
 }
+fun printVersion() = println(version)
