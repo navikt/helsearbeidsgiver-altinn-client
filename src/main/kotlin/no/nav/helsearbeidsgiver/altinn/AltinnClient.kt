@@ -2,12 +2,12 @@ package no.nav.helsearbeidsgiver.altinn
 
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.request.get
-import io.ktor.client.request.header
+import io.ktor.client.request.*
 import io.ktor.http.HttpStatusCode
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
 import no.nav.helsearbeidsgiver.utils.log.logger
+import org.apache.hc.core5.http.HttpHeaders
 import kotlin.time.Duration
 
 private const val PAGE_SIZE = 500
@@ -23,7 +23,7 @@ private const val PAGE_SIZE = 500
 class AltinnClient(
     private val url: String,
     private val serviceCode: String,
-    private val apiGwApiKey: String,
+    private val maskiportenClient: ()->String,
     private val altinnApiKey: String,
     cacheConfig: CacheConfig? = null,
 ) {
@@ -40,7 +40,6 @@ class AltinnClient(
             """AltinnClient-config:
                     url: $url
                     serviceCode: $serviceCode
-                    apiGwApiKey: ${apiGwApiKey.take(1)}.....
                     altinnApiKey: ${altinnApiKey.take(1)}.....
             """.trimIndent(),
         )
@@ -87,7 +86,7 @@ class AltinnClient(
         val url = buildUrl(id, pageNo)
         return try {
             httpClient.get(url) {
-                header("X-NAV-APIKEY", apiGwApiKey)
+                bearerAuth(maskiportenClient())
                 header("APIKEY", altinnApiKey)
             }
                 .body<Set<AltinnOrganisasjon>>()
