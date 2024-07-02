@@ -23,6 +23,6 @@ fun mockAltinnClient(status: HttpStatusCode, content: String = ""): AltinnClient
 
     return mockStatic(::createHttpClient) {
         every { createHttpClient() } returns mockHttpClient
-        AltinnClient("url", "", { "" }, "")
+        AltinnClient("url", "", "", "")
     }
 }

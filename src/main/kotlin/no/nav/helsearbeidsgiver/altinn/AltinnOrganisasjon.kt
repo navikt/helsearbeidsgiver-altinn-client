@@ -1,8 +1,8 @@
 package no.nav.helsearbeidsgiver.altinn
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 /**
  * En organisasjon slik de blir returnert fra Altinn.
@@ -22,17 +22,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class AltinnOrganisasjon(
-    @SerialName("Name")
+    @JsonNames("Name")
     val navn: String,
-    @SerialName("Type")
+    @JsonNames("Type")
     val type: String,
-    @SerialName("OrganizationNumber")
+    @JsonNames("OrganizationNumber")
     val orgnr: String? = null,
-    @SerialName("OrganizationForm")
+    @JsonNames("OrganizationForm")
     val orgForm: String? = null,
-    @SerialName("Status")
+    @JsonNames("Status")
     val status: String? = null,
-    @SerialName("ParentOrganizationNumber")
+    @JsonNames("ParentOrganizationNumber")
     val orgnrHovedenhet: String? = null,
 ) {
     internal fun nullEmptyStrings(): AltinnOrganisasjon =
