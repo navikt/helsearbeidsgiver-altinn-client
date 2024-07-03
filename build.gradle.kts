@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "no.nav.helsearbeidsgiver"
-version = "0.3.0"
+version = "0.4.0"
 
 plugins {
     kotlin("jvm")
@@ -31,6 +31,10 @@ repositories {
     mavenNav("*")
 }
 
+tasks.register("printVersion") {
+    println(project.version)
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -57,6 +61,7 @@ dependencies {
     implementation("no.nav.helsearbeidsgiver:utils:$utilsVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinSerializationVersion")
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
 
     testImplementation(testFixtures("no.nav.helsearbeidsgiver:utils:$utilsVersion"))
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")

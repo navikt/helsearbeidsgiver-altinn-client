@@ -1,5 +1,6 @@
 package no.nav.helsearbeidsgiver.altinn
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
@@ -23,16 +24,22 @@ import kotlinx.serialization.json.JsonNames
 @OptIn(ExperimentalSerializationApi::class)
 data class AltinnOrganisasjon(
     @JsonNames("Name")
+    @JsonProperty("name")
     val navn: String,
     @JsonNames("Type")
+    @JsonProperty("type")
     val type: String,
     @JsonNames("OrganizationNumber")
+    @JsonProperty("organizationNumber")
     val orgnr: String? = null,
     @JsonNames("OrganizationForm")
+    @JsonProperty("organizationForm")
     val orgForm: String? = null,
     @JsonNames("Status")
+    @JsonProperty("status")
     val status: String? = null,
     @JsonNames("ParentOrganizationNumber")
+    @JsonProperty("parentOrganizationNumber")
     val orgnrHovedenhet: String? = null,
 ) {
     internal fun nullEmptyStrings(): AltinnOrganisasjon =
