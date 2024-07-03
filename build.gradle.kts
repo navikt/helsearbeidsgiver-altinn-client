@@ -81,4 +81,3 @@ fun RepositoryHandler.mavenNav(repo: String): MavenArtifactRepository {
         }
     }
 }
-
