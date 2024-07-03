@@ -24,7 +24,7 @@ private const val PAGE_SIZE = 500
 class AltinnClient(
     private val url: String,
     private val serviceCode: String,
-    private val maskiportenClient: () -> String,
+    private val getToken: () -> String,
     private val altinnApiKey: String,
     cacheConfig: CacheConfig? = null,
 ) {
@@ -87,7 +87,7 @@ class AltinnClient(
         val url = buildUrl(id, pageNo)
         return try {
             httpClient.get(url) {
-                bearerAuth(maskiportenClient())
+                bearerAuth(getToken())
                 header("APIKEY", altinnApiKey)
             }
                 .body<Set<AltinnOrganisasjon>>()
