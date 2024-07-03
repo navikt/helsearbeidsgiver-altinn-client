@@ -24,22 +24,22 @@ import kotlinx.serialization.json.JsonNames
 @OptIn(ExperimentalSerializationApi::class)
 data class AltinnOrganisasjon(
     @JsonNames("Name")
-    @JsonProperty("Name")
+    @JsonProperty("name")
     val navn: String,
     @JsonNames("Type")
-    @JsonProperty("Type")
+    @JsonProperty("type")
     val type: String,
     @JsonNames("OrganizationNumber")
-    @JsonProperty("OrganizationNumber")
+    @JsonProperty("organizationNumber")
     val orgnr: String? = null,
     @JsonNames("OrganizationForm")
-    @JsonProperty("OrganizationForm")
+    @JsonProperty("organizationForm")
     val orgForm: String? = null,
     @JsonNames("Status")
-    @JsonProperty("Status")
+    @JsonProperty("status")
     val status: String? = null,
     @JsonNames("ParentOrganizationNumber")
-    @JsonProperty("ParentOrganizationNumber")
+    @JsonProperty("parentOrganizationNumber")
     val orgnrHovedenhet: String? = null,
 ) {
     internal fun nullEmptyStrings(): AltinnOrganisasjon =
