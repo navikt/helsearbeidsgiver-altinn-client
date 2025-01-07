@@ -30,7 +30,7 @@ class Altinn3Client(
 
     suspend fun hentTilganger(fnr: String): Set<String> =
         cache.getIfCacheNotNull(fnr) {
-            val request = "fnr" to fnr
+            val request = TilgangRequest(fnr)
 
             httpClient
                 .post("$baseUrl/m2m/altinn-tilganger") {
@@ -46,4 +46,9 @@ class Altinn3Client(
 @Serializable
 data class TilgangResponse(
     val tilgangTilOrgNr: Map<String, Set<String>>,
+)
+
+@Serializable
+data class TilgangRequest(
+    val fnr: String,
 )
