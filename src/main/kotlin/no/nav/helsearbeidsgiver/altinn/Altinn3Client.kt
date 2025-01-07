@@ -1,7 +1,6 @@
 package no.nav.helsearbeidsgiver.altinn
 
 import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -21,7 +20,7 @@ class Altinn3Client(
     private val getToken: () -> String,
     cacheConfig: CacheConfig? = null,
 ) {
-    private val httpClient = createHttpClient()
+    private val httpClient = createHttpClient(maxRetries = 3, getToken = getToken)
 
     private val cache =
         cacheConfig?.let {
@@ -39,7 +38,6 @@ class Altinn3Client(
 
             httpClient
                 .post("$baseUrl/m2m/altinn-tilganger") {
-                    bearerAuth(getToken())
                     contentType(ContentType.Application.Json)
                     setBody(request)
                 }.body<TilgangResponse>()

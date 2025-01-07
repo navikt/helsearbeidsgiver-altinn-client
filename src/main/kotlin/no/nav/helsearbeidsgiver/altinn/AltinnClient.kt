@@ -2,7 +2,6 @@ package no.nav.helsearbeidsgiver.altinn
 
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpStatusCode
@@ -30,18 +29,20 @@ class AltinnClient(
 ) {
     private val logger = this.logger()
 
-    private val httpClient = createHttpClient()
+    private val httpClient = createHttpClient(maxRetries = 3, getToken = getToken)
 
-    private val cache = cacheConfig?.let {
-        LocalCache<Set<AltinnOrganisasjon>>(it.entryDuration, it.maxEntries)
-    }
+    private val cache =
+        cacheConfig?.let {
+            LocalCache<Set<AltinnOrganisasjon>>(it.entryDuration, it.maxEntries)
+        }
 
     init {
         logger.debug(
-            """AltinnClient-config:
-                    url: $url
-                    serviceCode: $serviceCode
-                    altinnApiKey: ${altinnApiKey.take(1)}.....
+            """
+            AltinnClient-config:
+            url: $url
+            serviceCode: $serviceCode
+            altinnApiKey: ${altinnApiKey.take(1)}.....
             """.trimIndent(),
         )
     }
@@ -51,7 +52,10 @@ class AltinnClient(
      *
      * @param organisasjonId Kan være virksomhet, hovedenhet, privatperson eller organisasjonsledd.
      */
-    suspend fun harRettighetForOrganisasjon(identitetsnummer: String, organisasjonId: String): Boolean =
+    suspend fun harRettighetForOrganisasjon(
+        identitetsnummer: String,
+        organisasjonId: String,
+    ): Boolean =
         hentRettighetOrganisasjoner(identitetsnummer)
             .any {
                 it.orgnr == organisasjonId &&
@@ -83,14 +87,16 @@ class AltinnClient(
             rettighetOrganisasjoner
         }
 
-    private suspend fun hentRettighetOrganisasjonerForPage(id: String, pageNo: Int): Set<AltinnOrganisasjon> {
+    private suspend fun hentRettighetOrganisasjonerForPage(
+        id: String,
+        pageNo: Int,
+    ): Set<AltinnOrganisasjon> {
         val url = buildUrl(id, pageNo)
         return try {
-            httpClient.get(url) {
-                bearerAuth(getToken())
-                header("APIKEY", altinnApiKey)
-            }
-                .body<Set<AltinnOrganisasjon>>()
+            httpClient
+                .get(url) {
+                    header("APIKEY", altinnApiKey)
+                }.body<Set<AltinnOrganisasjon>>()
                 .map(AltinnOrganisasjon::nullEmptyStrings)
                 .toSet()
         } catch (e: ServerResponseException) {
@@ -105,7 +111,10 @@ class AltinnClient(
         }
     }
 
-    private fun buildUrl(id: String, pageNo: Int) = "$url/reportees/" +
+    private fun buildUrl(
+        id: String,
+        pageNo: Int,
+    ) = "$url/reportees/" +
         "?ForceEIAuthentication" +
         "&\$filter=Type+ne+'Person'+and+Status+eq+'Active'" +
         "&serviceCode=$serviceCode" +
@@ -120,6 +129,7 @@ data class CacheConfig(
     val maxEntries: Int,
 )
 
-class AltinnBrukteForLangTidException : Exception(
-    "Altinn brukte for lang tid til å svare på forespørselen om tilganger. Prøv igjen om litt.",
-)
+class AltinnBrukteForLangTidException :
+    Exception(
+        "Altinn brukte for lang tid til å svare på forespørselen om tilganger. Prøv igjen om litt.",
+    )

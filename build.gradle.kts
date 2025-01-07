@@ -55,6 +55,7 @@ dependencies {
     val utilsVersion: String by project
 
     implementation("io.ktor:ktor-client-apache5:$ktorVersion")
+    implementation("io.ktor:ktor-client-auth:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")

@@ -10,19 +10,23 @@ import io.ktor.http.headersOf
 import io.mockk.every
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 
-fun mockAltinnClient(status: HttpStatusCode, content: String = ""): AltinnClient {
-    val mockEngine = MockEngine {
-        respond(
-            content = content,
-            status = status,
-            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-        )
-    }
+fun mockAltinnClient(
+    status: HttpStatusCode,
+    content: String = "",
+): AltinnClient {
+    val mockEngine =
+        MockEngine {
+            respond(
+                content = content,
+                status = status,
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
 
-    val mockHttpClient = HttpClient(mockEngine) { customize() }
+    val mockHttpClient = HttpClient(mockEngine) { configure(1) { "" } }
 
     return mockStatic(::createHttpClient) {
-        every { createHttpClient() } returns mockHttpClient
+        every { createHttpClient(any(), any()) } returns mockHttpClient
         AltinnClient("url", "", { "" }, "")
     }
 }
