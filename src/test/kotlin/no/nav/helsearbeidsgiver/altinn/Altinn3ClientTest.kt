@@ -4,8 +4,11 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.row
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
@@ -58,5 +61,20 @@ class Altinn3ClientTest :
             shouldThrowExactly<ServerResponseException> {
                 altinn3Client.hentTilganger(FNR)
             }
+        }
+
+        "gyldig svar fra Altinn gir hierarki med liste av tilganger" {
+            val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.OK)
+
+            val tilgangRespons = altinn3Client.hentHierarkiMedTilganger(FNR)
+
+            val hovedEnhet = tilgangRespons.hierarki.find { it.orgnr == "810007702" }
+            hovedEnhet?.navn shouldBe "ANSTENDIG PIGGSVIN BYDEL"
+            hovedEnhet?.underenheter shouldNotBe null
+            hovedEnhet?.underenheter?.shouldHaveSize(3)
+            hovedEnhet?.underenheter?.map {
+                it.navn
+            } shouldContainExactly setOf("ANSTENDIG PIGGSVIN BARNEHAGE", "ANSTENDIG PIGGSVIN SYKEHJEM", "ANSTENDIG PIGGSVIN BRANNVESEN")
+            hovedEnhet?.underenheter?.map { it.orgnr } shouldContainExactly setOf("810007842", "810007982", "810008032")
         }
     })
