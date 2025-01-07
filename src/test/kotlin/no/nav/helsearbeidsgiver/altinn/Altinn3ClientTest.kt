@@ -12,7 +12,7 @@ private val validAltinnResponse = "rettighetene-til-tanja-minge.json".readResour
 
 private const val FNR = "01020354321"
 
-class Altinn3ClientTest: StringSpec({
+class Altinn3ClientTest : StringSpec({
     "fnr har kun rettigheter tilknyttet organisasjoner som Altinn returnerer og som er underenheter" {
         val altinnClient = mockAltinn3Client(HttpStatusCode.OK, validAltinnResponse)
 
