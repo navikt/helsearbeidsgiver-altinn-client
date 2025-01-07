@@ -10,6 +10,11 @@ import kotlinx.serialization.Serializable
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
 
+/**
+ * Klient som benytter Team Fager sitt API for å hente hvilke tilganger en innlogget bruker har i hvilke virksomheter/bedrifter.
+ *
+ * API-dokumentasjon her: https://arbeidsgiver-altinn-tilganger.intern.dev.nav.no/swagger-ui/index.html
+ */
 class Altinn3Client(
     private val baseUrl: String,
     private val serviceCode: String,
