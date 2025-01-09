@@ -33,6 +33,6 @@ fun mockAltinn3Client(
     return mockStatic(::createHttpClient) {
         every { createHttpClient(any()) } returns mockHttpClient
 
-        Altinn3Client("url", "4936", true, { "" })
+        Altinn3Client("url", "4936", true)
     }
 }

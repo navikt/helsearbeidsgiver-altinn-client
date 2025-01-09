@@ -20,7 +20,6 @@ class Altinn3Client(
     private val baseUrl: String,
     private val serviceCode: String,
     private val m2m: Boolean = true,
-    private val getToken: () -> String,
     cacheConfig: CacheConfig? = null,
 ) {
     private val urlString = if (m2m) "$baseUrl/m2m/altinn-tilganger" else "$baseUrl/altinn-tilganger"
@@ -31,7 +30,10 @@ class Altinn3Client(
         }
     val FILTER = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = emptySet())
 
-    suspend fun hentHierarkiMedTilganger(fnr: String): TilgangResponse =
+    suspend fun hentHierarkiMedTilganger(
+        fnr: String,
+        getToken: () -> String,
+    ): TilgangResponse =
         cache.getIfCacheNotNull(fnr) {
             val request = if (m2m) TilgangRequest(fnr, FILTER) else TilgangRequest(null, FILTER)
             httpClient
@@ -42,12 +44,16 @@ class Altinn3Client(
                 }.body<TilgangResponse>()
         }
 
-    suspend fun hentTilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).tilgangTilOrgNr["$serviceCode:1"].orEmpty()
+    suspend fun hentTilganger(
+        fnr: String,
+        getToken: () -> String,
+    ): Set<String> = hentHierarkiMedTilganger(fnr, getToken).tilgangTilOrgNr["$serviceCode:1"].orEmpty()
 
     suspend fun harTilgangTilOrganisasjon(
         fnr: String,
         orgnr: String,
-    ): Boolean = orgnr in hentTilganger(fnr)
+        getToken: () -> String,
+    ): Boolean = orgnr in hentTilganger(fnr, getToken)
 }
 
 @Serializable

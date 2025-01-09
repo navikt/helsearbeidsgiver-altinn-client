@@ -29,7 +29,7 @@ class Altinn3ClientTest :
             ).forEach { (orgnr, expected) ->
                 withClue("$orgnr should yield $expected") {
                     altinn3Client
-                        .harTilgangTilOrganisasjon(FNR, orgnr)
+                        .harTilgangTilOrganisasjon(FNR, orgnr, { "" })
                         .shouldBe(expected)
                 }
             }
@@ -38,7 +38,7 @@ class Altinn3ClientTest :
         "gyldig svar fra Altinn gir liste av organisasjoner" {
             val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.OK)
 
-            val authList = altinn3Client.hentTilganger(FNR)
+            val authList = altinn3Client.hentTilganger(FNR, { "" })
 
             authList.size shouldBeExactly 3
         }
@@ -46,7 +46,7 @@ class Altinn3ClientTest :
         "serverfeil trigger retry som gir gyldig svar" {
             val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.BadGateway, HttpStatusCode.OK)
 
-            val tilganger = altinn3Client.hentTilganger(FNR)
+            val tilganger = altinn3Client.hentTilganger(FNR, { "" })
 
             tilganger.size shouldBeExactly 3
         }
@@ -59,14 +59,14 @@ class Altinn3ClientTest :
                 )
 
             shouldThrowExactly<ServerResponseException> {
-                altinn3Client.hentTilganger(FNR)
+                altinn3Client.hentTilganger(FNR, { "" })
             }
         }
 
         "gyldig svar fra Altinn gir hierarki med liste av tilganger" {
             val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.OK)
 
-            val tilgangRespons = altinn3Client.hentHierarkiMedTilganger(FNR)
+            val tilgangRespons = altinn3Client.hentHierarkiMedTilganger(FNR, { "" })
 
             val hovedEnhet = tilgangRespons.hierarki.find { it.orgnr == "810007702" }
             hovedEnhet?.navn shouldBe "ANSTENDIG PIGGSVIN BYDEL"
