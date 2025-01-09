@@ -23,10 +23,10 @@ fun mockAltinnClient(
             )
         }
 
-    val mockHttpClient = HttpClient(mockEngine) { configure(1) { "" } }
+    val mockHttpClient = HttpClient(mockEngine) { configure(1) }
 
     return mockStatic(::createHttpClient) {
-        every { createHttpClient(any(), any()) } returns mockHttpClient
+        every { createHttpClient(any()) } returns mockHttpClient
         AltinnClient("url", "", { "" }, "")
     }
 }

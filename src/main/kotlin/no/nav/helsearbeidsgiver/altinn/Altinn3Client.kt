@@ -1,6 +1,7 @@
 package no.nav.helsearbeidsgiver.altinn
 
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -22,21 +23,24 @@ class Altinn3Client(
     private val getToken: () -> String,
     cacheConfig: CacheConfig? = null,
 ) {
-
     private val urlString = if (m2m) "$baseUrl/m2m/altinn-tilganger" else "$baseUrl/altinn-tilganger"
-    private val httpClient = createHttpClient(maxRetries = 3, getToken = getToken)
-    private val cache = cacheConfig?.let {
-        LocalCache<TilgangResponse>(it.entryDuration, it.maxEntries)
-    }
+    private val httpClient = createHttpClient(maxRetries = 3)
+    private val cache =
+        cacheConfig?.let {
+            LocalCache<TilgangResponse>(it.entryDuration, it.maxEntries)
+        }
     val FILTER = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = emptySet())
 
-    suspend fun hentHierarkiMedTilganger(fnr: String): TilgangResponse = cache.getIfCacheNotNull(fnr) {
-        val request = if (m2m) TilgangRequest(fnr, FILTER) else TilgangRequest(null, FILTER)
-        httpClient.post(urlString) {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }.body<TilgangResponse>()
-    }
+    suspend fun hentHierarkiMedTilganger(fnr: String): TilgangResponse =
+        cache.getIfCacheNotNull(fnr) {
+            val request = if (m2m) TilgangRequest(fnr, FILTER) else TilgangRequest(null, FILTER)
+            httpClient
+                .post(urlString) {
+                    contentType(ContentType.Application.Json)
+                    bearerAuth(getToken())
+                    setBody(request)
+                }.body<TilgangResponse>()
+        }
 
     suspend fun hentTilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).tilgangTilOrgNr["$serviceCode:1"].orEmpty()
 

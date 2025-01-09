@@ -7,38 +7,16 @@ import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpRequestTimeoutException
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import no.nav.helsearbeidsgiver.utils.json.jsonConfig
 
-internal fun createHttpClient(
-    maxRetries: Int,
-    getToken: () -> String,
-): HttpClient = HttpClient(Apache5) { configure(maxRetries, getToken) }
+internal fun createHttpClient(maxRetries: Int): HttpClient = HttpClient(Apache5) { configure(maxRetries) }
 
-internal fun HttpClientConfig<*>.configure(
-    retries: Int,
-    getToken: () -> String,
-) {
+internal fun HttpClientConfig<*>.configure(retries: Int) {
     expectSuccess = true
     install(ContentNegotiation) {
         json(jsonConfig)
-    }
-    var token: BearerTokens
-    install(Auth) {
-        bearer {
-            loadTokens {
-                token = BearerTokens(getToken(), "")
-                token
-            }
-            refreshTokens {
-                token = BearerTokens(getToken(), "")
-                token
-            }
-        }
     }
     install(HttpRequestRetry) {
         maxRetries = retries

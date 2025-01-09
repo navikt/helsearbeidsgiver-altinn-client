@@ -2,6 +2,7 @@ package no.nav.helsearbeidsgiver.altinn
 
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpStatusCode
@@ -29,7 +30,7 @@ class AltinnClient(
 ) {
     private val logger = this.logger()
 
-    private val httpClient = createHttpClient(maxRetries = 3, getToken = getToken)
+    private val httpClient = createHttpClient(maxRetries = 3)
 
     private val cache =
         cacheConfig?.let {
@@ -96,6 +97,7 @@ class AltinnClient(
             httpClient
                 .get(url) {
                     header("APIKEY", altinnApiKey)
+                    bearerAuth(getToken())
                 }.body<Set<AltinnOrganisasjon>>()
                 .map(AltinnOrganisasjon::nullEmptyStrings)
                 .toSet()
