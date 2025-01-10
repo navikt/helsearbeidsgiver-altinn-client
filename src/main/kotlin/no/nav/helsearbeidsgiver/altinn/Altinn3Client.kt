@@ -28,14 +28,14 @@ class Altinn3Client(
         cacheConfig?.let {
             LocalCache<TilgangResponse>(it.entryDuration, it.maxEntries)
         }
-    val FILTER = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = emptySet())
+    private val FILTER = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = emptySet())
 
     suspend fun hentHierarkiMedTilganger(
         fnr: String,
         getToken: () -> String,
     ): TilgangResponse =
         cache.getIfCacheNotNull(fnr) {
-            val request = if (m2m) TilgangRequest(fnr, FILTER) else TilgangRequest(null, FILTER)
+            val request = if (m2m) TilgangM2MRequest(fnr, FILTER) else TilgangRequest(FILTER)
             httpClient
                 .post(urlString) {
                     contentType(ContentType.Application.Json)
@@ -76,7 +76,12 @@ data class AltinnTilgang(
 
 @Serializable
 data class TilgangRequest(
-    val fnr: String?,
+    val filter: Filter,
+)
+
+@Serializable
+data class TilgangM2MRequest(
+    val fnr: String,
     val filter: Filter,
 )
 
