@@ -17,10 +17,10 @@ private val validAltinnResponse = "rettighetene-til-tanja-minge.json".readResour
 
 private const val FNR = "01020354321"
 
-class Altinn3ClientTest :
+class Altinn3OBOClientTest :
     StringSpec({
         "fnr har kun rettigheter tilknyttet organisasjoner som Altinn returnerer og som er underenheter" {
-            val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.OK)
+            val altinn3Client = mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.OK)
 
             listOf(
                 row("810007842", true),
@@ -36,7 +36,7 @@ class Altinn3ClientTest :
         }
 
         "gyldig svar fra Altinn gir liste av organisasjoner" {
-            val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.OK)
+            val altinn3Client = mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.OK)
 
             val authList = altinn3Client.hentTilganger(FNR, { "" })
 
@@ -44,7 +44,7 @@ class Altinn3ClientTest :
         }
 
         "serverfeil trigger retry som gir gyldig svar" {
-            val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.BadGateway, HttpStatusCode.OK)
+            val altinn3Client = mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.BadGateway, HttpStatusCode.OK)
 
             val tilganger = altinn3Client.hentTilganger(FNR, { "" })
 
@@ -53,7 +53,7 @@ class Altinn3ClientTest :
 
         "GatewayTimeout fra Altinn gir ServerResponseException" {
             val altinn3Client =
-                mockAltinn3Client(
+                mockAltinn3OBOClient(
                     content = validAltinnResponse,
                     HttpStatusCode.GatewayTimeout,
                 )
@@ -64,7 +64,7 @@ class Altinn3ClientTest :
         }
 
         "gyldig svar fra Altinn gir hierarki med liste av tilganger" {
-            val altinn3Client = mockAltinn3Client(content = validAltinnResponse, HttpStatusCode.OK)
+            val altinn3Client = mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.OK)
 
             val tilgangRespons = altinn3Client.hentHierarkiMedTilganger(FNR, { "" })
 

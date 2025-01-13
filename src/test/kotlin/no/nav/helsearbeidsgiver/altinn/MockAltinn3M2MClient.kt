@@ -10,10 +10,10 @@ import io.ktor.http.headersOf
 import io.mockk.every
 import no.nav.helsearbeidsgiver.utils.test.mock.mockStatic
 
-fun mockAltinn3OBOClient(
+fun mockAltinn3M2MClient(
     content: String = "",
     vararg statuses: HttpStatusCode,
-): Altinn3OBOClient {
+): Altinn3M2MClient {
     val mockHttpClient =
         HttpClient(MockEngine) {
             engine {
@@ -33,6 +33,6 @@ fun mockAltinn3OBOClient(
     return mockStatic(::createHttpClient) {
         every { createHttpClient(any()) } returns mockHttpClient
 
-        Altinn3OBOClient("url", "4936")
+        Altinn3M2MClient("url", "4936", { "" })
     }
 }
