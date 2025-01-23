@@ -9,6 +9,8 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
+import no.nav.helsearbeidsgiver.utils.log.logger
+import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 
 /**
  * Klient som benytter Team Fager sitt API for å hente hvilke tilganger en innlogget bruker har i hvilke virksomheter/bedrifter.
@@ -22,6 +24,9 @@ class Altinn3M2MClient(
     private val getToken: () -> String,
     cacheConfig: CacheConfig? = null,
 ) {
+    private val logger = this.logger()
+    private val sikkerLogger = sikkerLogger()
+
     private val urlString = "$baseUrl/m2m/altinn-tilganger"
     private val httpClient = createHttpClient(maxRetries = 3)
     private val cache =
@@ -32,13 +37,25 @@ class Altinn3M2MClient(
 
     suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons =
         cache.getIfCacheNotNull(fnr) {
+            "Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(5)}XXXXX".also {
+                logger.info(it)
+                sikkerLogger.info(it)
+            }
+
             val request = TilgangM2MRequest(fnr, tilgangFilter)
+
             httpClient
                 .post(urlString) {
                     contentType(ContentType.Application.Json)
                     bearerAuth(getToken())
                     setBody(request)
                 }.body<AltinnTilgangRespons>()
+                .also { respons ->
+                    "Hentet Altinntilganger for ${fnr.take(5)}XXXXX med ${respons.hierarki.size} hovedenheter.".also {
+                        logger.info(it)
+                        sikkerLogger.info(it)
+                    }
+                }
         }
 
     suspend fun hentTilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).tilgangTilOrgNr["$serviceCode:1"].orEmpty()
