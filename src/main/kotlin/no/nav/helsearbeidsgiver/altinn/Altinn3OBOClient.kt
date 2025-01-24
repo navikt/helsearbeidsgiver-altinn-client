@@ -33,10 +33,10 @@ class Altinn3OBOClient(
     private val tilgangRequest =
         TilgangOBORequest(
             filter =
-                Filter(
-                    altinn2Tilganger = setOf("$serviceCode:1"),
-                    altinn3Tilganger = emptySet(),
-                ),
+            Filter(
+                altinn2Tilganger = setOf("$serviceCode:1"),
+                altinn3Tilganger = emptySet(),
+            ),
         )
 
     suspend fun hentHierarkiMedTilganger(
