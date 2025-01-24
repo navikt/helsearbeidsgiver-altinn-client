@@ -9,7 +9,6 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
-import no.nav.helsearbeidsgiver.utils.log.logger
 import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 
 /**
@@ -22,7 +21,6 @@ class Altinn3OBOClient(
     private val serviceCode: String,
     cacheConfig: CacheConfig? = null,
 ) {
-    private val logger = this.logger()
     private val sikkerLogger = sikkerLogger()
 
     private val urlString = "$baseUrl/altinn-tilganger"
@@ -46,10 +44,7 @@ class Altinn3OBOClient(
         getToken: () -> String,
     ): AltinnTilgangRespons =
         cache.getIfCacheNotNull(fnr) {
-            "Henter Altinntilganger fra Fager sitt obo-endepunkt for ${fnr.take(5)}XXXXX".also {
-                logger.info(it)
-                sikkerLogger.info(it)
-            }
+            sikkerLogger.info("Henter Altinntilganger fra Fager sitt obo-endepunkt for ${fnr.take(6)}XXXX")
 
             httpClient
                 .post(urlString) {
@@ -58,10 +53,7 @@ class Altinn3OBOClient(
                     setBody(tilgangRequest)
                 }.body<AltinnTilgangRespons>()
                 .also { respons ->
-                    "Hentet Altinntilganger for ${fnr.take(5)}XXXXX med ${respons.hierarki.size} hovedenheter.".also {
-                        logger.info(it)
-                        sikkerLogger.info(it)
-                    }
+                    sikkerLogger.info("Hentet Altinntilganger for ${fnr.take(6)}XXXX med ${respons.hierarki.size} hovedenheter.")
                 }
         }
 

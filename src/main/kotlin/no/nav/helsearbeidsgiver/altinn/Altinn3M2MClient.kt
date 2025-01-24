@@ -9,7 +9,6 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
 import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
-import no.nav.helsearbeidsgiver.utils.log.logger
 import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 
 /**
@@ -24,7 +23,6 @@ class Altinn3M2MClient(
     private val getToken: () -> String,
     cacheConfig: CacheConfig? = null,
 ) {
-    private val logger = this.logger()
     private val sikkerLogger = sikkerLogger()
 
     private val urlString = "$baseUrl/m2m/altinn-tilganger"
@@ -37,10 +35,7 @@ class Altinn3M2MClient(
 
     suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons =
         cache.getIfCacheNotNull(fnr) {
-            "Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(5)}XXXXX".also {
-                logger.info(it)
-                sikkerLogger.info(it)
-            }
+            sikkerLogger.info("Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(6)}XXXX")
 
             val request = TilgangM2MRequest(fnr, tilgangFilter)
 
@@ -51,10 +46,7 @@ class Altinn3M2MClient(
                     setBody(request)
                 }.body<AltinnTilgangRespons>()
                 .also { respons ->
-                    "Hentet Altinntilganger for ${fnr.take(5)}XXXXX med ${respons.hierarki.size} hovedenheter.".also {
-                        logger.info(it)
-                        sikkerLogger.info(it)
-                    }
+                    sikkerLogger.info("Hentet Altinntilganger for ${fnr.take(6)}XXXX med ${respons.hierarki.size} hovedenheter.")
                 }
         }
 
