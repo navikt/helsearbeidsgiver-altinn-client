@@ -17,7 +17,7 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
  * API-dokumentasjon her: https://arbeidsgiver-altinn-tilganger.intern.dev.nav.no/swagger-ui/index.html
  */
 class Altinn3OBOClient(
-    private val baseUrl: String,
+    baseUrl: String,
     private val serviceCode: String,
     cacheConfig: CacheConfig? = null,
 ) {
