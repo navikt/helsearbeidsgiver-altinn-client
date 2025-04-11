@@ -33,6 +33,5 @@ private fun Throwable.isRetryableException() =
         is SocketTimeoutException -> true
         is ConnectTimeoutException -> true
         is HttpRequestTimeoutException -> true
-        is java.net.SocketTimeoutException -> true
         else -> false
     }

@@ -18,7 +18,7 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
  */
 
 class Altinn3M2MClient(
-    private val baseUrl: String,
+    baseUrl: String,
     private val serviceCode: String,
     private val getToken: () -> String,
     cacheConfig: CacheConfig? = null,
