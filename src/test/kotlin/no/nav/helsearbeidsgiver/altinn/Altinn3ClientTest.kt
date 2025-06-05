@@ -1,5 +1,6 @@
 package no.nav.helsearbeidsgiver.altinn
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
@@ -10,9 +11,12 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
+import kotlin.Pair
+import kotlin.String
 
 private val validAltinnResponse = "rettighetene-til-tanja-minge.json".readResource()
 
@@ -20,46 +24,36 @@ private const val FNR = "01020354321"
 
 class Altinn3ClientTest :
     FunSpec({
-        context("hent tilganger vellykket") {
+        context("hent tilganger vellykket gir liste av organisasjoner") {
             withData(
-                mapOf(
-                    "svar fra Altinn M2M gir liste av organisasjoner" to mockAltinn3M2MClient(content = validAltinnResponse, HttpStatusCode.OK),
-                    "svar fra Altinn OBO gir liste av organisasjoner" to mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.OK),
-                    "serverfeil fra Altinn M2M trigger retry som gir gyldig svar" to
-                        mockAltinn3M2MClient(content = validAltinnResponse, HttpStatusCode.BadGateway, HttpStatusCode.OK),
-                    "serverfeil fra Altinn OBO trigger retry som gir gyldig svar" to
-                        mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.BadGateway, HttpStatusCode.OK),
+                mapOf<String, suspend (Pair<HttpStatusCode, String>) -> Set<String>>(
+                    "Altinn M2M" to { mockAltinn3M2MClient(it).hentTilganger(FNR) },
+                    "Altinn OBO" to { mockAltinn3OBOClient(it).hentTilganger(FNR) { "" } },
                 ),
-            ) { altinn3Client ->
-                val tilganger =
-                    when (altinn3Client) {
-                        is Altinn3M2MClient -> altinn3Client.hentTilganger(FNR)
-                        is Altinn3OBOClient -> altinn3Client.hentTilganger(FNR, { "" })
-                        else -> throw IllegalStateException("Altinn3Client må være av typen Altinn3M2MClient eller Altinn3OBOClient")
-                    }
+            ) { hentTilganger ->
+                val tilganger = hentTilganger(HttpStatusCode.OK to validAltinnResponse)
+
                 tilganger.size shouldBeExactly 3
             }
         }
 
         context("fnr har kun rettigheter tilknyttet organisasjoner som Altinn returnerer og som er underenheter") {
             withData(
-                mapOf(
-                    "for Altinn M2M" to mockAltinn3M2MClient(content = validAltinnResponse, HttpStatusCode.OK),
-                    "for Altinn OBO" to mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.OK),
+                mapOf<String, suspend (Pair<HttpStatusCode, String>, String) -> Boolean>(
+                    "Altinn M2M" to { responses, orgnr -> mockAltinn3M2MClient(responses).harTilgangTilOrganisasjon(FNR, orgnr) },
+                    "Altinn OBO" to { responses, orgnr -> mockAltinn3OBOClient(responses).harTilgangTilOrganisasjon(FNR, orgnr) { "" } },
                 ),
-            ) { altinn3Client ->
-
+            ) { harTilgangTilOrganisasjon ->
                 listOf(
                     row("810007842", true),
                     row("810007702", false), // Er hovedenhet
                     row("123456789", false), // Er ikke i listen fra responsen
                 ).forEach { (orgnr, expected) ->
                     val harTilgang =
-                        when (altinn3Client) {
-                            is Altinn3M2MClient -> altinn3Client.harTilgangTilOrganisasjon(FNR, orgnr)
-                            is Altinn3OBOClient -> altinn3Client.harTilgangTilOrganisasjon(FNR, orgnr, { "" })
-                            else -> throw IllegalStateException("Altinn3Client må være av typen Altinn3M2MClient eller Altinn3OBOClient")
-                        }
+                        harTilgangTilOrganisasjon(
+                            HttpStatusCode.OK to validAltinnResponse,
+                            orgnr,
+                        )
 
                     withClue("$orgnr should yield $expected") {
                         harTilgang shouldBe expected
@@ -70,17 +64,12 @@ class Altinn3ClientTest :
 
         context("gyldig svar fra Altinn gir hierarki med liste av tilganger") {
             withData(
-                mapOf(
-                    "for Altinn M2M" to mockAltinn3M2MClient(content = validAltinnResponse, HttpStatusCode.OK),
-                    "for Altinn OBO" to mockAltinn3OBOClient(content = validAltinnResponse, HttpStatusCode.OK),
+                mapOf<String, suspend (Pair<HttpStatusCode, String>) -> AltinnTilgangRespons>(
+                    "Altinn M2M" to { mockAltinn3M2MClient(it).hentHierarkiMedTilganger(FNR) },
+                    "Altinn OBO" to { mockAltinn3OBOClient(it).hentHierarkiMedTilganger(FNR) { "" } },
                 ),
-            ) { altinn3Client ->
-                val tilgangRespons =
-                    when (altinn3Client) {
-                        is Altinn3M2MClient -> altinn3Client.hentHierarkiMedTilganger(FNR)
-                        is Altinn3OBOClient -> altinn3Client.hentHierarkiMedTilganger(FNR, { "" })
-                        else -> throw IllegalStateException("Altinn3Client må være av typen Altinn3M2MClient eller Altinn3OBOClient")
-                    }
+            ) { hentHierarkiMedTilganger ->
+                val tilgangRespons = hentHierarkiMedTilganger(HttpStatusCode.OK to validAltinnResponse)
 
                 val hovedEnhet = tilgangRespons.hierarki.find { it.orgnr == "810007702" }
                 hovedEnhet?.navn shouldBe "ANSTENDIG PIGGSVIN BYDEL"
@@ -93,26 +82,60 @@ class Altinn3ClientTest :
             }
         }
 
-        context("kast server exception") {
-            withData(
-                mapOf(
-                    "GatewayTimeout fra Altinn M2M gir ServerResponseException" to mockAltinn3M2MClient(content = "", HttpStatusCode.GatewayTimeout),
-                    "GatewayTimeout fra Altinn OBO gir ServerResponseException" to mockAltinn3OBOClient(content = "", HttpStatusCode.GatewayTimeout),
-                ),
-            ) { altinn3Client ->
-                when (altinn3Client) {
-                    is Altinn3M2MClient ->
-                        shouldThrowExactly<ServerResponseException> {
-                            altinn3Client.hentTilganger(FNR)
+        listOf<Pair<String, suspend (Array<Pair<HttpStatusCode, String>>) -> Unit>>(
+            "Altinn M2M" to { mockAltinn3M2MClient(*it).hentHierarkiMedTilganger(FNR) },
+            "Altinn OBO" to { mockAltinn3OBOClient(*it).hentHierarkiMedTilganger(FNR) { "" } },
+        )
+            .forEach { (clientType, hentHierarkiMedTilganger) ->
+                context(clientType) {
+                    test("feiler ved 4xx-feil") {
+                        shouldThrowExactly<ClientRequestException> {
+                            hentHierarkiMedTilganger(
+                                arrayOf(
+                                    HttpStatusCode.NotFound to "",
+                                ),
+                            )
                         }
+                    }
 
-                    is Altinn3OBOClient ->
-                        shouldThrowExactly<ServerResponseException> {
-                            altinn3Client.hentTilganger(FNR, { "" })
+                    test("lykkes ved færre 5xx-feil enn max retries (3)") {
+                        shouldNotThrowAny {
+                            hentHierarkiMedTilganger(
+                                arrayOf(
+                                    HttpStatusCode.InternalServerError to "",
+                                    HttpStatusCode.InternalServerError to "",
+                                    HttpStatusCode.InternalServerError to "",
+                                    HttpStatusCode.OK to validAltinnResponse,
+                                ),
+                            )
                         }
+                    }
 
-                    else -> throw IllegalStateException("Altinn3Client må være av typen Altinn3M2MClient eller Altinn3OBOClient")
+                    test("feiler ved flere 5xx-feil enn max retries (3)") {
+                        shouldThrowExactly<ServerResponseException> {
+                            hentHierarkiMedTilganger(
+                                arrayOf(
+                                    HttpStatusCode.InternalServerError to "",
+                                    HttpStatusCode.InternalServerError to "",
+                                    HttpStatusCode.InternalServerError to "",
+                                    HttpStatusCode.InternalServerError to "",
+                                ),
+                            )
+                        }
+                    }
+
+                    test("kall feiler og prøver på nytt ved timeout") {
+                        shouldNotThrowAny {
+                            hentHierarkiMedTilganger(
+                                arrayOf(
+                                    HttpStatusCode.OK to "timeout",
+                                    HttpStatusCode.OK to "timeout",
+                                    HttpStatusCode.OK to "timeout",
+                                    HttpStatusCode.OK to validAltinnResponse,
+                                ),
+                            )
+                        }
+                    }
                 }
             }
-        }
     })
