@@ -8,7 +8,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import no.nav.helsearbeidsgiver.utils.cache.LocalCache
-import no.nav.helsearbeidsgiver.utils.cache.getIfCacheNotNull
 import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 
 /**
@@ -20,21 +19,18 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 class Altinn3M2MClient(
     baseUrl: String,
     private val serviceCode: String,
+    cacheConfig: LocalCache.Config,
     private val getToken: () -> String,
-    cacheConfig: CacheConfig? = null,
 ) {
     private val sikkerLogger = sikkerLogger()
 
     private val urlString = "$baseUrl/m2m/altinn-tilganger"
-    private val httpClient = createHttpClient(maxRetries = 3)
-    private val cache =
-        cacheConfig?.let {
-            LocalCache<AltinnTilgangRespons>(it.entryDuration, it.maxEntries)
-        }
+    private val httpClient = createHttpClient()
+    private val cache = LocalCache<AltinnTilgangRespons>(cacheConfig)
     private val tilgangFilter = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = emptySet())
 
     suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons =
-        cache.getIfCacheNotNull(fnr) {
+        cache.getOrPut(fnr) {
             sikkerLogger.info("Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(6)}XXXX")
 
             val request = TilgangM2MRequest(fnr, tilgangFilter)
