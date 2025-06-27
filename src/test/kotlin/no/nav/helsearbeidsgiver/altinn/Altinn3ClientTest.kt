@@ -14,6 +14,7 @@ import io.kotest.matchers.shouldNotBe
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.test.runTest
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
 import kotlin.Pair
 import kotlin.String
@@ -89,51 +90,62 @@ class Altinn3ClientTest :
             .forEach { (clientType, hentHierarkiMedTilganger) ->
                 context(clientType) {
                     test("feiler ved 4xx-feil") {
-                        shouldThrowExactly<ClientRequestException> {
-                            hentHierarkiMedTilganger(
-                                arrayOf(
-                                    HttpStatusCode.NotFound to "",
-                                ),
-                            )
+                        val mockResponses = arrayOf(HttpStatusCode.NotFound to "")
+
+                        val e = shouldThrowExactly<ClientRequestException> {
+                            hentHierarkiMedTilganger(mockResponses)
                         }
+
+                        e.response.status shouldBe HttpStatusCode.NotFound
                     }
 
                     test("lykkes ved færre 5xx-feil enn max retries (3)") {
-                        shouldNotThrowAny {
-                            hentHierarkiMedTilganger(
-                                arrayOf(
-                                    HttpStatusCode.InternalServerError to "",
-                                    HttpStatusCode.InternalServerError to "",
-                                    HttpStatusCode.InternalServerError to "",
-                                    HttpStatusCode.OK to validAltinnResponse,
-                                ),
+                        val mockResponses =
+                            arrayOf(
+                                HttpStatusCode.InternalServerError to "",
+                                HttpStatusCode.InternalServerError to "",
+                                HttpStatusCode.InternalServerError to "",
+                                HttpStatusCode.OK to validAltinnResponse,
                             )
+
+                        runTest {
+                            shouldNotThrowAny {
+                                hentHierarkiMedTilganger(mockResponses)
+                            }
                         }
                     }
 
                     test("feiler ved flere 5xx-feil enn max retries (3)") {
-                        shouldThrowExactly<ServerResponseException> {
-                            hentHierarkiMedTilganger(
-                                arrayOf(
-                                    HttpStatusCode.InternalServerError to "",
-                                    HttpStatusCode.InternalServerError to "",
-                                    HttpStatusCode.InternalServerError to "",
-                                    HttpStatusCode.InternalServerError to "",
-                                ),
+                        val mockResponses =
+                            arrayOf(
+                                HttpStatusCode.InternalServerError to "",
+                                HttpStatusCode.InternalServerError to "",
+                                HttpStatusCode.InternalServerError to "",
+                                HttpStatusCode.InternalServerError to "",
                             )
+
+                        runTest {
+                            val e = shouldThrowExactly<ServerResponseException> {
+                                hentHierarkiMedTilganger(mockResponses)
+                            }
+
+                            e.response.status shouldBe HttpStatusCode.InternalServerError
                         }
                     }
 
                     test("kall feiler og prøver på nytt ved timeout") {
-                        shouldNotThrowAny {
-                            hentHierarkiMedTilganger(
-                                arrayOf(
-                                    HttpStatusCode.OK to "timeout",
-                                    HttpStatusCode.OK to "timeout",
-                                    HttpStatusCode.OK to "timeout",
-                                    HttpStatusCode.OK to validAltinnResponse,
-                                ),
+                        val mockResponses =
+                            arrayOf(
+                                HttpStatusCode.OK to "timeout",
+                                HttpStatusCode.OK to "timeout",
+                                HttpStatusCode.OK to "timeout",
+                                HttpStatusCode.OK to validAltinnResponse,
                             )
+
+                        runTest {
+                            shouldNotThrowAny {
+                                hentHierarkiMedTilganger(mockResponses)
+                            }
                         }
                     }
                 }
