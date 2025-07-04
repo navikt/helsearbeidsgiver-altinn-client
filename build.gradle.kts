@@ -69,6 +69,7 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutinesVersion")
 }
 
