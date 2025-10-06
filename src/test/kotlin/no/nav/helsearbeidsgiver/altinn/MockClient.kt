@@ -27,23 +27,24 @@ private fun <T : Any> mockClient(
     vararg responses: Pair<HttpStatusCode, String>,
     createClient: () -> T,
 ): T {
-    val mockEngine = MockEngine.create {
-        reuseHandlers = false
-        requestHandlers.addAll(
-            responses.map { (status, content) ->
-                {
-                    if (content == "timeout") {
-                        delay(600)
+    val mockEngine =
+        MockEngine.create {
+            reuseHandlers = false
+            requestHandlers.addAll(
+                responses.map { (status, content) ->
+                    {
+                        if (content == "timeout") {
+                            delay(600)
+                        }
+                        respond(
+                            content = content,
+                            status = status,
+                            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                        )
                     }
-                    respond(
-                        content = content,
-                        status = status,
-                        headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-                    )
-                }
-            },
-        )
-    }
+                },
+            )
+        }
 
     val mockHttpClient = HttpClient(mockEngine) { configure() }
 
