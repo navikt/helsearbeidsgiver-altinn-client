@@ -1,12 +1,14 @@
 rootProject.name = "altinn-client"
 
 pluginManagement {
+    val kotestVersion: String by settings
     val kotlinVersion: String by settings
     val kotlinterVersion: String by settings
 
     plugins {
         kotlin("jvm") version kotlinVersion
         kotlin("plugin.serialization") version kotlinVersion
+        id("io.kotest") version kotestVersion
         id("org.jmailen.kotlinter") version kotlinterVersion
         id("maven-publish")
     }

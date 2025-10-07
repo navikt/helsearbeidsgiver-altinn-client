@@ -4,7 +4,6 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.data.row
 import io.kotest.datatest.withData
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
@@ -16,8 +15,6 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
-import kotlin.Pair
-import kotlin.String
 
 private val validAltinnResponse = "rettighetene-til-tanja-minge.json".readResource()
 
@@ -46,9 +43,9 @@ class Altinn3ClientTest :
                 ),
             ) { harTilgangTilOrganisasjon ->
                 listOf(
-                    row("810007842", true),
-                    row("810007702", false), // Er hovedenhet
-                    row("123456789", false), // Er ikke i listen fra responsen
+                    "810007842" to true,
+                    "810007702" to false, // Er hovedenhet
+                    "123456789" to false, // Er ikke i listen fra responsen
                 ).forEach { (orgnr, expected) ->
                     val harTilgang =
                         harTilgangTilOrganisasjon(
