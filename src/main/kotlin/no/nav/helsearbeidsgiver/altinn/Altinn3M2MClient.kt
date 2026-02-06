@@ -58,8 +58,6 @@ class Altinn3M2MClient(
             altinn2Tilganger + altinn3Tilganger
         }
 
-    suspend fun hentAltinn3Tilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).organisasjonerMedAltinn3Tilgang()
-
     fun AltinnTilgangRespons.organisasjonerMedAltinn2Tilgang(): Set<String> = tilgangTilOrgNr["$serviceCode:1"].orEmpty()
 
     fun AltinnTilgangRespons.organisasjonerMedAltinn3Tilgang(): Set<String> = tilgangTilOrgNr[ressurs.value].orEmpty()
@@ -68,11 +66,6 @@ class Altinn3M2MClient(
         fnr: String,
         orgnr: String,
     ): Boolean = orgnr in hentTilganger(fnr)
-
-    suspend fun harTilgangTilOrganisasjonAltinn3(
-        fnr: String,
-        orgnr: String,
-    ): Boolean = orgnr in hentAltinn3Tilganger(fnr)
 }
 
 @Serializable

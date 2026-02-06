@@ -60,30 +60,6 @@ class Altinn3ClientTest :
             }
         }
 
-        context("fnr har kun rettigheter tilknyttet organisasjoner som Altinn returnerer for Altinn3-ressurs") {
-            withData(
-                mapOf<String, suspend (Pair<HttpStatusCode, String>, String) -> Boolean>(
-                    "Altinn M2M" to { responses, orgnr -> mockAltinn3M2MClient(responses).harTilgangTilOrganisasjonAltinn3(FNR, orgnr) },
-                ),
-            ) { harTilgangTilOrganisasjon ->
-                listOf(
-                    "810007842" to true,
-                    "810007702" to true, // Er hovedenhet
-                    "123456789" to false, // Er ikke i listen fra responsen
-                ).forEach { (orgnr, expected) ->
-                    val harTilgang =
-                        harTilgangTilOrganisasjon(
-                            HttpStatusCode.OK to validAltinnResponse,
-                            orgnr,
-                        )
-
-                    withClue("$orgnr should yield $expected") {
-                        harTilgang shouldBe expected
-                    }
-                }
-            }
-        }
-
         context("gyldig svar fra Altinn gir hierarki med liste av tilganger") {
             withData(
                 mapOf<String, suspend (Pair<HttpStatusCode, String>) -> AltinnTilgangRespons>(
