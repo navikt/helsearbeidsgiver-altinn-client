@@ -47,9 +47,22 @@ class Altinn3M2MClient(
                 }
         }
 
-    suspend fun hentTilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).tilgangTilOrgNr["$serviceCode:1"].orEmpty()
+    suspend fun hentTilganger(fnr: String): Set<String> =
+        hentHierarkiMedTilganger(fnr).let {
+            val altinn2Tilganger =
+                it.organisasjonerMedAltinn2Tilgang()
+            val altinn3Tilganger = it.organisasjonerMedAltinn3Tilgang()
+            sikkerLogger().info(
+                "Hentet tilganger for ${fnr.take(6)}XXXX: antall tilganger Altinn2: ${altinn2Tilganger.size}, Altinn3: ${altinn3Tilganger.size}",
+            )
+            altinn2Tilganger + altinn3Tilganger
+        }
 
-    suspend fun hentAltinn3Tilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).tilgangTilOrgNr[ressurs.value].orEmpty()
+    suspend fun hentAltinn3Tilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).organisasjonerMedAltinn3Tilgang()
+
+    fun AltinnTilgangRespons.organisasjonerMedAltinn2Tilgang(): Set<String> = tilgangTilOrgNr["$serviceCode:1"].orEmpty()
+
+    fun AltinnTilgangRespons.organisasjonerMedAltinn3Tilgang(): Set<String> = tilgangTilOrgNr[ressurs.value].orEmpty()
 
     suspend fun harTilgangTilOrganisasjon(
         fnr: String,
