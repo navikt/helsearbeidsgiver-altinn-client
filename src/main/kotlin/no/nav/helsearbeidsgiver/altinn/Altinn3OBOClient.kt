@@ -32,7 +32,7 @@ class Altinn3OBOClient(
             filter =
                 Filter(
                     altinn2Tilganger = setOf("$serviceCode:1"),
-                    altinn3Tilganger = emptySet(),
+                    altinn3Tilganger = setOf(ressurs.value),
                 ),
         )
 
