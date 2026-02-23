@@ -62,8 +62,9 @@ class Altinn3OBOClient(
             val altinn2Tilganger =
                 it.organisasjonerMedAltinn2Tilgang()
             val altinn3Tilganger = it.organisasjonerMedAltinn3Tilgang()
+            val diffTilganger = altinn2Tilganger.minus(altinn3Tilganger)
             sikkerLogger().info(
-                "Hentet tilganger for ${fnr.take(6)}XXXX: antall tilganger Altinn2: ${altinn2Tilganger.size}, Altinn3: ${altinn3Tilganger.size}",
+                "Hentet altinn tilganger for ${fnr.take(6)}XXXXX: diff antall: ${diffTilganger.size}, diff: $diffTilganger",
             )
             altinn2Tilganger + altinn3Tilganger
         }
