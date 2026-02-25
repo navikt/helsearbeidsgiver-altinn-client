@@ -15,12 +15,12 @@ import kotlin.time.Duration
 
 fun mockAltinn3M2MClient(vararg responses: Pair<HttpStatusCode, String>): Altinn3M2MClient =
     mockClient(*responses) {
-        Altinn3M2MClient("url", "4936", LocalCache.Config(Duration.ZERO, 1)) { "" }
+        Altinn3M2MClient("url", "4936", Altinn3Ressurs.INNTEKTSMELDING, LocalCache.Config(Duration.ZERO, 1)) { "" }
     }
 
 fun mockAltinn3OBOClient(vararg responses: Pair<HttpStatusCode, String>): Altinn3OBOClient =
     mockClient(*responses) {
-        Altinn3OBOClient("url", "4936", LocalCache.Config(Duration.ZERO, 1))
+        Altinn3OBOClient("url", "4936", Altinn3Ressurs.INNTEKTSMELDING, LocalCache.Config(Duration.ZERO, 1))
     }
 
 private fun <T : Any> mockClient(

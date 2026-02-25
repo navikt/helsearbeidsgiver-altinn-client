@@ -19,6 +19,7 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 class Altinn3M2MClient(
     baseUrl: String,
     private val serviceCode: String,
+    val ressurs: Altinn3Ressurs,
     cacheConfig: LocalCache.Config,
     private val getToken: () -> String,
 ) {
@@ -27,7 +28,7 @@ class Altinn3M2MClient(
     private val urlString = "$baseUrl/m2m/altinn-tilganger"
     private val httpClient = createHttpClient()
     private val cache = LocalCache<AltinnTilgangRespons>(cacheConfig)
-    private val tilgangFilter = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = emptySet())
+    private val tilgangFilter = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = setOf(ressurs.value))
 
     suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons =
         cache.getOrPut(fnr) {
@@ -46,7 +47,21 @@ class Altinn3M2MClient(
                 }
         }
 
-    suspend fun hentTilganger(fnr: String): Set<String> = hentHierarkiMedTilganger(fnr).tilgangTilOrgNr["$serviceCode:1"].orEmpty()
+    suspend fun hentTilganger(fnr: String): Set<String> =
+        hentHierarkiMedTilganger(fnr).let {
+            val altinn2Tilganger =
+                it.organisasjonerMedAltinn2Tilgang()
+            val altinn3Tilganger = it.organisasjonerMedAltinn3Tilgang()
+            val diffTilganger = altinn2Tilganger.minus(altinn3Tilganger)
+            sikkerLogger().info(
+                "Hentet altinn tilganger for ${fnr.take(6)}XXXXX: diff antall: ${diffTilganger.size}, diff: $diffTilganger",
+            )
+            altinn2Tilganger + altinn3Tilganger
+        }
+
+    fun AltinnTilgangRespons.organisasjonerMedAltinn2Tilgang(): Set<String> = tilgangTilOrgNr["$serviceCode:1"].orEmpty()
+
+    fun AltinnTilgangRespons.organisasjonerMedAltinn3Tilgang(): Set<String> = tilgangTilOrgNr[ressurs.value].orEmpty()
 
     suspend fun harTilgangTilOrganisasjon(
         fnr: String,

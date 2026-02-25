@@ -2,243 +2,745 @@
   "isError": false,
   "hierarki": [
     {
-      "orgnr": "810007672",
+      "orgnr": "911206722",
       "altinn3Tilganger": [
-        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger"
+        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger",
+        "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver",
+        "nav_sykepenger_inntektsmelding",
+        "nav_sykepenger_fritak-arbeidsgiverperiode",
+        "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver",
+        "nav_arbeidsforhold_aa-registeret-brukerstotte",
+        "nav_arbeidsforhold_aa-registeret-sok-tilgang",
+        "nav_syfo_dialogmote",
+        "nav_syfo_oppfolgingsplan",
+        "nav_syfo_oppgi-narmesteleder",
+        "test-fager",
+        "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+        "nav_tiltak_tiltaksrefusjon",
+        "nav_foreldrepenger_inntektsmelding",
+        "nav_rekruttering_stillingsannonser",
+        "nav_rekruttering_kandidater",
+        "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk",
+        "nav_test_melding",
+        "nav_sosialtjenester_digisos-avtale"
       ],
       "altinn2Tilganger": [
         "5810:1",
-        "5934:1",
-        "3403:1",
         "2896:87",
-        "5516:2",
-        "5332:1",
-        "5384:1",
+        "5441:1",
+        "5441:2",
+        "5719:1",
         "5078:1",
+        "3403:1",
+        "5867:1",
         "4826:1",
         "4936:1",
-        "5902:1",
         "5278:1",
-        "5516:3",
-        "5441:1",
+        "5332:1",
+        "5384:1",
         "5516:1",
+        "5516:2",
+        "5516:3",
+        "5516:4",
         "5516:5",
-        "5516:4"
+        "5516:6",
+        "5902:1",
+        "4596:1"
       ],
       "underenheter": [],
-      "navn": "ANSTENDIG BJØRN KOMMUNE",
-      "organisasjonsform": "KOMM"
+      "navn": "SKOPPUM OG SANDØY",
+      "organisasjonsform": "BEDR",
+      "erSlettet": false
     },
     {
       "orgnr": "810007702",
-      "altinn3Tilganger": [],
+      "altinn3Tilganger": [
+        "test-fager",
+        "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+        "nav_tiltak_tiltaksrefusjon",
+        "nav_foreldrepenger_inntektsmelding",
+        "nav_sykepenger_inntektsmelding",
+        "nav_sykepenger_fritak-arbeidsgiverperiode",
+        "nav_rekruttering_stillingsannonser",
+        "nav_rekruttering_kandidater",
+        "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+      ],
       "altinn2Tilganger": [
-        "5934:1",
-        "3403:1",
-        "2896:87",
-        "5332:1",
-        "5384:1",
         "5078:1",
+        "3403:1",
         "4826:1",
         "4936:1",
+        "5332:1",
+        "5384:1",
         "5902:1"
       ],
       "underenheter": [
         {
-          "orgnr": "810007842",
-          "altinn3Tilganger": [],
-          "altinn2Tilganger": [
-            "5934:1",
-            "3403:1",
-            "2896:87",
-            "5332:1",
-            "5384:1",
-            "5078:1",
-            "4826:1",
-            "4936:1",
-            "5902:1"
-          ],
-          "underenheter": [],
-          "navn": "ANSTENDIG PIGGSVIN BARNEHAGE",
-          "organisasjonsform": "BEDR"
-        },
-        {
-          "orgnr": "810007982",
-          "altinn3Tilganger": [],
-          "altinn2Tilganger": [
-            "5934:1",
-            "3403:1",
-            "2896:87",
-            "5332:1",
-            "5384:1",
-            "5078:1",
-            "4826:1",
-            "4936:1",
-            "5902:1"
-          ],
-          "underenheter": [],
-          "navn": "ANSTENDIG PIGGSVIN SYKEHJEM",
-          "organisasjonsform": "BEDR"
-        },
-        {
           "orgnr": "810008032",
-          "altinn3Tilganger": [],
+          "altinn3Tilganger": [
+            "test-fager",
+            "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+            "nav_tiltak_tiltaksrefusjon",
+            "nav_foreldrepenger_inntektsmelding",
+            "nav_sykepenger_inntektsmelding",
+            "nav_sykepenger_fritak-arbeidsgiverperiode",
+            "nav_rekruttering_stillingsannonser",
+            "nav_rekruttering_kandidater",
+            "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+          ],
           "altinn2Tilganger": [
-            "5934:1",
-            "3403:1",
-            "2896:87",
-            "5332:1",
-            "5384:1",
             "5078:1",
+            "3403:1",
             "4826:1",
             "4936:1",
+            "5332:1",
+            "5384:1",
             "5902:1"
           ],
           "underenheter": [],
           "navn": "ANSTENDIG PIGGSVIN BRANNVESEN",
-          "organisasjonsform": "BEDR"
+          "organisasjonsform": "BEDR",
+          "erSlettet": false
+        },
+        {
+          "orgnr": "810007982",
+          "altinn3Tilganger": [
+            "test-fager",
+            "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+            "nav_tiltak_tiltaksrefusjon",
+            "nav_foreldrepenger_inntektsmelding",
+            "nav_sykepenger_inntektsmelding",
+            "nav_sykepenger_fritak-arbeidsgiverperiode",
+            "nav_rekruttering_stillingsannonser",
+            "nav_rekruttering_kandidater",
+            "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+          ],
+          "altinn2Tilganger": [
+            "5078:1",
+            "3403:1",
+            "4826:1",
+            "4936:1",
+            "5332:1",
+            "5384:1",
+            "5902:1"
+          ],
+          "underenheter": [],
+          "navn": "ANSTENDIG PIGGSVIN SYKEHJEM",
+          "organisasjonsform": "BEDR",
+          "erSlettet": false
+        },
+        {
+          "orgnr": "810007842",
+          "altinn3Tilganger": [
+            "app_nav_a2-4596-1",
+            "nav-migratedcorrespondence-4503-2",
+            "test-fager",
+            "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+            "nav_tiltak_tiltaksrefusjon",
+            "nav_foreldrepenger_inntektsmelding",
+            "nav_sykepenger_inntektsmelding",
+            "nav_sykepenger_fritak-arbeidsgiverperiode",
+            "nav_rekruttering_stillingsannonser",
+            "nav_rekruttering_kandidater",
+            "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+          ],
+          "altinn2Tilganger": [
+            "5078:1",
+            "3403:1",
+            "4826:1",
+            "4936:1",
+            "5332:1",
+            "5384:1",
+            "5902:1",
+            "4596:1"
+          ],
+          "underenheter": [],
+          "navn": "ANSTENDIG PIGGSVIN BARNEHAGE",
+          "organisasjonsform": "BEDR",
+          "erSlettet": false
         }
       ],
       "navn": "ANSTENDIG PIGGSVIN BYDEL",
-      "organisasjonsform": "ORGL"
+      "organisasjonsform": "ORGL",
+      "erSlettet": false
+    },
+    {
+      "orgnr": "810007672",
+      "altinn3Tilganger": [
+        "test-fager",
+        "nav_test_melding",
+        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger",
+        "nav_sosialtjenester_digisos-avtale",
+        "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver",
+        "nav_sykepenger_inntektsmelding",
+        "nav_sykepenger_fritak-arbeidsgiverperiode",
+        "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver",
+        "nav_arbeidsforhold_aa-registeret-brukerstotte",
+        "nav_arbeidsforhold_aa-registeret-sok-tilgang",
+        "nav_syfo_dialogmote",
+        "nav_syfo_oppfolgingsplan",
+        "nav_syfo_oppgi-narmesteleder",
+        "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+        "nav_tiltak_tiltaksrefusjon",
+        "nav_foreldrepenger_inntektsmelding",
+        "nav_rekruttering_stillingsannonser",
+        "nav_rekruttering_kandidater",
+        "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+      ],
+      "altinn2Tilganger": [
+        "5810:1",
+        "5867:1",
+        "2896:87",
+        "5441:1",
+        "5441:2",
+        "5719:1",
+        "5078:1",
+        "3403:1",
+        "4826:1",
+        "4936:1",
+        "5278:1",
+        "5332:1",
+        "5384:1",
+        "5516:1",
+        "5516:2",
+        "5516:3",
+        "5516:4",
+        "5516:5",
+        "5516:6",
+        "5902:1",
+        "4596:1"
+      ],
+      "underenheter": [],
+      "navn": "ANSTENDIG BJØRN KOMMUNE",
+      "organisasjonsform": "KOMM",
+      "erSlettet": false
     },
     {
       "orgnr": "911212218",
       "altinn3Tilganger": [
-        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger"
+        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger",
+        "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver",
+        "nav_sykepenger_inntektsmelding",
+        "nav_sykepenger_fritak-arbeidsgiverperiode",
+        "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver",
+        "nav_arbeidsforhold_aa-registeret-brukerstotte",
+        "nav_arbeidsforhold_aa-registeret-sok-tilgang",
+        "nav_syfo_dialogmote",
+        "nav_syfo_oppfolgingsplan",
+        "nav_syfo_oppgi-narmesteleder",
+        "test-fager",
+        "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+        "nav_tiltak_tiltaksrefusjon",
+        "nav_foreldrepenger_inntektsmelding",
+        "nav_rekruttering_stillingsannonser",
+        "nav_rekruttering_kandidater",
+        "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk",
+        "nav_test_melding",
+        "nav_sosialtjenester_digisos-avtale"
       ],
       "altinn2Tilganger": [
         "5810:1",
-        "5934:1",
-        "3403:1",
         "2896:87",
-        "5516:2",
-        "5332:1",
-        "5384:1",
+        "5441:1",
+        "5441:2",
+        "5719:1",
         "5078:1",
+        "3403:1",
+        "5867:1",
         "4826:1",
         "4936:1",
-        "5902:1",
         "5278:1",
-        "5516:3",
-        "5441:1",
+        "5332:1",
+        "5384:1",
         "5516:1",
+        "5516:2",
+        "5516:3",
+        "5516:4",
         "5516:5",
-        "5516:4"
+        "5516:6",
+        "5902:1",
+        "4596:1"
       ],
       "underenheter": [],
       "navn": "SKJERSTAD OG KJØRSVIKBUGEN",
-      "organisasjonsform": "AS"
-    },
-    {
-      "orgnr": "911206722",
-      "altinn3Tilganger": [
-        "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger"
-      ],
-      "altinn2Tilganger": [
-        "5810:1",
-        "5934:1",
-        "3403:1",
-        "2896:87",
-        "5516:2",
-        "5332:1",
-        "5384:1",
-        "5078:1",
-        "4826:1",
-        "4936:1",
-        "5902:1",
-        "5278:1",
-        "5516:3",
-        "5441:1",
-        "5516:1",
-        "5516:5",
-        "5516:4"
-      ],
-      "underenheter": [],
-      "navn": "SKOPPUM OG SANDØY",
-      "organisasjonsform": "BEDR"
+      "organisasjonsform": "AS",
+      "erSlettet": false
     }
   ],
   "orgNrTilTilganger": {
-    "810007842": [
-      "5934:1",
-      "3403:1",
+    "810007672": [
+      "5810:1",
+      "5867:1",
       "2896:87",
-      "5332:1",
-      "5384:1",
+      "5441:1",
+      "5441:2",
+      "5719:1",
       "5078:1",
+      "3403:1",
       "4826:1",
       "4936:1",
-      "5902:1"
+      "5278:1",
+      "5332:1",
+      "5384:1",
+      "5516:1",
+      "5516:2",
+      "5516:3",
+      "5516:4",
+      "5516:5",
+      "5516:6",
+      "5902:1",
+      "4596:1",
+      "test-fager",
+      "nav_test_melding",
+      "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger",
+      "nav_sosialtjenester_digisos-avtale",
+      "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver",
+      "nav_arbeidsforhold_aa-registeret-brukerstotte",
+      "nav_arbeidsforhold_aa-registeret-sok-tilgang",
+      "nav_syfo_dialogmote",
+      "nav_syfo_oppfolgingsplan",
+      "nav_syfo_oppgi-narmesteleder",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+    ],
+    "810007702": [
+      "5078:1",
+      "3403:1",
+      "4826:1",
+      "4936:1",
+      "5332:1",
+      "5384:1",
+      "5902:1",
+      "test-fager",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+    ],
+    "810007842": [
+      "5078:1",
+      "3403:1",
+      "4826:1",
+      "4936:1",
+      "5332:1",
+      "5384:1",
+      "5902:1",
+      "4596:1",
+      "app_nav_a2-4596-1",
+      "nav-migratedcorrespondence-4503-2",
+      "test-fager",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
     ],
     "810007982": [
-      "5934:1",
-      "3403:1",
-      "2896:87",
-      "5332:1",
-      "5384:1",
       "5078:1",
+      "3403:1",
       "4826:1",
       "4936:1",
-      "5902:1"
+      "5332:1",
+      "5384:1",
+      "5902:1",
+      "test-fager",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
     ],
     "810008032": [
-      "5934:1",
-      "3403:1",
-      "2896:87",
-      "5332:1",
-      "5384:1",
       "5078:1",
+      "3403:1",
       "4826:1",
       "4936:1",
-      "5902:1"
+      "5332:1",
+      "5384:1",
+      "5902:1",
+      "test-fager",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk"
+    ],
+    "911206722": [
+      "5810:1",
+      "2896:87",
+      "5441:1",
+      "5441:2",
+      "5719:1",
+      "5078:1",
+      "3403:1",
+      "5867:1",
+      "4826:1",
+      "4936:1",
+      "5278:1",
+      "5332:1",
+      "5384:1",
+      "5516:1",
+      "5516:2",
+      "5516:3",
+      "5516:4",
+      "5516:5",
+      "5516:6",
+      "5902:1",
+      "4596:1",
+      "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger",
+      "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver",
+      "nav_arbeidsforhold_aa-registeret-brukerstotte",
+      "nav_arbeidsforhold_aa-registeret-sok-tilgang",
+      "nav_syfo_dialogmote",
+      "nav_syfo_oppfolgingsplan",
+      "nav_syfo_oppgi-narmesteleder",
+      "test-fager",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk",
+      "nav_test_melding",
+      "nav_sosialtjenester_digisos-avtale"
+    ],
+    "911212218": [
+      "5810:1",
+      "2896:87",
+      "5441:1",
+      "5441:2",
+      "5719:1",
+      "5078:1",
+      "3403:1",
+      "5867:1",
+      "4826:1",
+      "4936:1",
+      "5278:1",
+      "5332:1",
+      "5384:1",
+      "5516:1",
+      "5516:2",
+      "5516:3",
+      "5516:4",
+      "5516:5",
+      "5516:6",
+      "5902:1",
+      "4596:1",
+      "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger",
+      "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver",
+      "nav_sykepenger_inntektsmelding",
+      "nav_sykepenger_fritak-arbeidsgiverperiode",
+      "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver",
+      "nav_arbeidsforhold_aa-registeret-brukerstotte",
+      "nav_arbeidsforhold_aa-registeret-sok-tilgang",
+      "nav_syfo_dialogmote",
+      "nav_syfo_oppfolgingsplan",
+      "nav_syfo_oppgi-narmesteleder",
+      "test-fager",
+      "nav_forebygge-og-redusere-sykefravar_ia-samarbeid",
+      "nav_tiltak_tiltaksrefusjon",
+      "nav_foreldrepenger_inntektsmelding",
+      "nav_rekruttering_stillingsannonser",
+      "nav_rekruttering_kandidater",
+      "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk",
+      "nav_test_melding",
+      "nav_sosialtjenester_digisos-avtale"
     ]
   },
   "tilgangTilOrgNr": {
-    "5934:1": [
-      "810007842",
-      "810007982",
-      "810008032"
-    ],
-    "3403:1": [
-      "810007842",
-      "810007982",
-      "810008032"
+    "5810:1": [
+      "911206722",
+      "810007672",
+      "911212218"
     ],
     "2896:87": [
-      "810007842",
-      "810007982",
-      "810008032"
+      "911206722",
+      "810007672",
+      "911212218"
     ],
-    "5332:1": [
-      "810007842",
-      "810007982",
-      "810008032"
+    "5441:1": [
+      "911206722",
+      "810007672",
+      "911212218"
     ],
-    "5384:1": [
-      "810007842",
-      "810007982",
-      "810008032"
+    "5441:2": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5719:1": [
+      "911206722",
+      "810007672",
+      "911212218"
     ],
     "5078:1": [
-      "810007842",
+      "911206722",
+      "810007702",
+      "810008032",
       "810007982",
-      "810008032"
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "3403:1": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "5867:1": [
+      "911206722",
+      "810007672",
+      "911212218"
     ],
     "4826:1": [
-      "810007842",
+      "911206722",
+      "810007702",
+      "810008032",
       "810007982",
-      "810008032"
+      "810007842",
+      "810007672",
+      "911212218"
     ],
     "4936:1": [
-      "810007842",
+      "911206722",
+      "810007702",
+      "810008032",
       "810007982",
-      "810008032"
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "5278:1": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5332:1": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "5384:1": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "5516:1": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5516:2": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5516:3": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5516:4": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5516:5": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "5516:6": [
+      "911206722",
+      "810007672",
+      "911212218"
     ],
     "5902:1": [
-      "810007842",
+      "911206722",
+      "810007702",
+      "810008032",
       "810007982",
-      "810008032"
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "4596:1": [
+      "911206722",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_permittering-og-nedbemmaning_innsyn-i-alle-innsendte-meldinger": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_utbetaling_endre-kontonummer-refusjon-arbeidsgiver": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_sykepenger_inntektsmelding": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_sykepenger_fritak-arbeidsgiverperiode": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_arbeidsforhold_aa-registeret-innsyn-arbeidsgiver": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_arbeidsforhold_aa-registeret-brukerstotte": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_arbeidsforhold_aa-registeret-sok-tilgang": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_syfo_dialogmote": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_syfo_oppfolgingsplan": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_syfo_oppgi-narmesteleder": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "test-fager": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_forebygge-og-redusere-sykefravar_ia-samarbeid": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_tiltak_tiltaksrefusjon": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_foreldrepenger_inntektsmelding": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_rekruttering_stillingsannonser": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_rekruttering_kandidater": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_forebygge-og-redusere-sykefravar_sykefravarsstatistikk": [
+      "911206722",
+      "810007702",
+      "810008032",
+      "810007982",
+      "810007842",
+      "810007672",
+      "911212218"
+    ],
+    "nav_test_melding": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "nav_sosialtjenester_digisos-avtale": [
+      "911206722",
+      "810007672",
+      "911212218"
+    ],
+    "app_nav_a2-4596-1": [
+      "810007842"
+    ],
+    "nav-migratedcorrespondence-4503-2": [
+      "810007842"
     ]
   }
 }

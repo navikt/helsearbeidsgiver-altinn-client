@@ -31,11 +31,11 @@ class Altinn3ClientTest :
             ) { hentTilganger ->
                 val tilganger = hentTilganger(HttpStatusCode.OK to validAltinnResponse)
 
-                tilganger.size shouldBeExactly 3
+                tilganger.size shouldBeExactly 7
             }
         }
 
-        context("fnr har kun rettigheter tilknyttet organisasjoner som Altinn returnerer og som er underenheter") {
+        context("fnr har kun rettigheter tilknyttet organisasjoner som Altinn returnerer") {
             withData(
                 mapOf<String, suspend (Pair<HttpStatusCode, String>, String) -> Boolean>(
                     "Altinn M2M" to { responses, orgnr -> mockAltinn3M2MClient(responses).harTilgangTilOrganisasjon(FNR, orgnr) },
@@ -44,7 +44,7 @@ class Altinn3ClientTest :
             ) { harTilgangTilOrganisasjon ->
                 listOf(
                     "810007842" to true,
-                    "810007702" to false, // Er hovedenhet
+                    "810007702" to true, // Er hovedenhet
                     "123456789" to false, // Er ikke i listen fra responsen
                 ).forEach { (orgnr, expected) ->
                     val harTilgang =
@@ -75,8 +75,8 @@ class Altinn3ClientTest :
                 hovedEnhet?.underenheter?.shouldHaveSize(3)
                 hovedEnhet?.underenheter?.map {
                     it.navn
-                } shouldContainExactly setOf("ANSTENDIG PIGGSVIN BARNEHAGE", "ANSTENDIG PIGGSVIN SYKEHJEM", "ANSTENDIG PIGGSVIN BRANNVESEN")
-                hovedEnhet?.underenheter?.map { it.orgnr } shouldContainExactly setOf("810007842", "810007982", "810008032")
+                } shouldContainExactly setOf("ANSTENDIG PIGGSVIN BRANNVESEN", "ANSTENDIG PIGGSVIN SYKEHJEM", "ANSTENDIG PIGGSVIN BARNEHAGE")
+                hovedEnhet?.underenheter?.map { it.orgnr } shouldContainExactly setOf("810008032", "810007982", "810007842")
             }
         }
 
