@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.testCoroutineScheduler
 import io.kotest.datatest.withData
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
@@ -13,7 +14,7 @@ import io.kotest.matchers.shouldNotBe
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import no.nav.helsearbeidsgiver.utils.test.resource.readResource
 
 private val validAltinnResponse = "rettighetene-til-tanja-minge.json".readResource()
@@ -80,17 +81,20 @@ class Altinn3ClientTest :
             }
         }
 
-        listOf<Pair<String, suspend (Array<Pair<HttpStatusCode, String>>) -> Unit>>(
-            "Altinn M2M" to { mockAltinn3M2MClient(*it).hentHierarkiMedTilganger(FNR) },
-            "Altinn OBO" to { mockAltinn3OBOClient(*it).hentHierarkiMedTilganger(FNR) { "" } },
+        listOf<Pair<String, suspend (Array<Pair<HttpStatusCode, String>>, TestCoroutineScheduler?) -> Unit>>(
+            "Altinn M2M" to { responses, s -> mockAltinn3M2MClient(*responses, scheduler = s).hentHierarkiMedTilganger(FNR) },
+            "Altinn OBO" to { responses, s -> mockAltinn3OBOClient(*responses, scheduler = s).hentHierarkiMedTilganger(FNR) { "" } },
         ).forEach { (clientType, hentHierarkiMedTilganger) ->
             context(clientType) {
+                // Unngår venting på delay-funksjonen
+                coroutineTestScope = true
+
                 test("feiler ved 4xx-feil") {
                     val mockResponses = arrayOf(HttpStatusCode.NotFound to "")
 
                     val e =
                         shouldThrowExactly<ClientRequestException> {
-                            hentHierarkiMedTilganger(mockResponses)
+                            hentHierarkiMedTilganger(mockResponses, null)
                         }
 
                     e.response.status shouldBe HttpStatusCode.NotFound
@@ -105,10 +109,8 @@ class Altinn3ClientTest :
                             HttpStatusCode.OK to validAltinnResponse,
                         )
 
-                    runTest {
-                        shouldNotThrowAny {
-                            hentHierarkiMedTilganger(mockResponses)
-                        }
+                    shouldNotThrowAny {
+                        hentHierarkiMedTilganger(mockResponses, null)
                     }
                 }
 
@@ -121,14 +123,12 @@ class Altinn3ClientTest :
                             HttpStatusCode.InternalServerError to "",
                         )
 
-                    runTest {
-                        val e =
-                            shouldThrowExactly<ServerResponseException> {
-                                hentHierarkiMedTilganger(mockResponses)
-                            }
+                    val e =
+                        shouldThrowExactly<ServerResponseException> {
+                            hentHierarkiMedTilganger(mockResponses, null)
+                        }
 
-                        e.response.status shouldBe HttpStatusCode.InternalServerError
-                    }
+                    e.response.status shouldBe HttpStatusCode.InternalServerError
                 }
 
                 test("kall feiler og prøver på nytt ved timeout") {
@@ -140,10 +140,8 @@ class Altinn3ClientTest :
                             HttpStatusCode.OK to validAltinnResponse,
                         )
 
-                    runTest {
-                        shouldNotThrowAny {
-                            hentHierarkiMedTilganger(mockResponses)
-                        }
+                    shouldNotThrowAny {
+                        hentHierarkiMedTilganger(mockResponses, testCoroutineScheduler)
                     }
                 }
             }
