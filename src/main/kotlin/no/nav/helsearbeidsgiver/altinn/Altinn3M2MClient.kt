@@ -13,7 +13,7 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 /**
  * Klient som benytter Team Fager sitt API for å hente hvilke tilganger en innlogget bruker har i hvilke virksomheter/bedrifter.
  *
- * API-dokumentasjon her: https://arbeidsgiver-altinn-tilganger.intern.dev.nav.no/swagger-ui/index.html
+ * API-dokumentasjon her: https://arbeidsgiver-altinn-tilganger.intern.dev.nav.no/swagger-ui
  */
 
 class Altinn3M2MClient(

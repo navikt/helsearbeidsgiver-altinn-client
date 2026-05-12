@@ -23,12 +23,12 @@ internal fun HttpClientConfig<*>.configure() {
             maxRetries = 3,
             retryOnTimeout = true,
         )
-        exponentialDelay()
+        constantDelay()
     }
 
     install(HttpTimeout) {
-        connectTimeoutMillis = 500
-        requestTimeoutMillis = 500
-        socketTimeoutMillis = 500
+        connectTimeoutMillis = 3000
+        requestTimeoutMillis = 3000
+        socketTimeoutMillis = 3000
     }
 }
