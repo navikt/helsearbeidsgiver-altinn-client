@@ -17,7 +17,6 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
  */
 class Altinn3OBOClient(
     baseUrl: String,
-    private val serviceCode: String,
     val ressurs: Altinn3Ressurs,
     cacheConfig: LocalCache.Config,
 ) {
@@ -31,7 +30,7 @@ class Altinn3OBOClient(
         TilgangOBORequest(
             filter =
                 Filter(
-                    altinn2Tilganger = setOf("$serviceCode:1"),
+                    altinn2Tilganger = emptySet(),
                     altinn3Tilganger = setOf(ressurs.value),
                 ),
         )
@@ -59,17 +58,12 @@ class Altinn3OBOClient(
         getToken: () -> String,
     ): Set<String> =
         hentHierarkiMedTilganger(fnr, getToken).let {
-            val altinn2Tilganger =
-                it.organisasjonerMedAltinn2Tilgang()
             val altinn3Tilganger = it.organisasjonerMedAltinn3Tilgang()
-            val diffTilganger = altinn2Tilganger.minus(altinn3Tilganger)
             sikkerLogger().info(
-                "Hentet altinn tilganger for ${fnr.take(6)}XXXXX: diff antall: ${diffTilganger.size}, diff: $diffTilganger",
+                "Hentet altinn tilganger for ${fnr.take(6)}XXXXX: antall altinn3 tilganger: ${altinn3Tilganger.size}",
             )
-            altinn2Tilganger + altinn3Tilganger
+            altinn3Tilganger
         }
-
-    fun AltinnTilgangRespons.organisasjonerMedAltinn2Tilgang(): Set<String> = tilgangTilOrgNr["$serviceCode:1"].orEmpty()
 
     fun AltinnTilgangRespons.organisasjonerMedAltinn3Tilgang(): Set<String> = tilgangTilOrgNr[ressurs.value].orEmpty()
 

@@ -18,7 +18,6 @@ import no.nav.helsearbeidsgiver.utils.log.sikkerLogger
 
 class Altinn3M2MClient(
     baseUrl: String,
-    private val serviceCode: String,
     val ressurs: Altinn3Ressurs,
     cacheConfig: LocalCache.Config,
     private val getToken: () -> String,
@@ -27,39 +26,36 @@ class Altinn3M2MClient(
 
     private val urlString = "$baseUrl/m2m/altinn-tilganger"
     private val httpClient = createHttpClient()
-    private val cache = LocalCache<AltinnTilgangRespons>(cacheConfig)
-    private val tilgangFilter = Filter(altinn2Tilganger = setOf("$serviceCode:1"), altinn3Tilganger = setOf(ressurs.value))
+    private val cache = LocalCache<Set<String>>(cacheConfig)
 
-    suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons =
-        cache.getOrPut(fnr) {
-            sikkerLogger.info("Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(6)}XXXX")
+    private val tilgangFilter = Filter(altinn2Tilganger = emptySet(), altinn3Tilganger = setOf(ressurs.value))
 
-            val request = TilgangM2MRequest(fnr, tilgangFilter)
+    suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons {
+        sikkerLogger.info("Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(6)}XXXX")
+        val request = TilgangM2MRequest(fnr, tilgangFilter)
+        httpClient
+            .post(urlString) {
+                contentType(ContentType.Application.Json)
+                bearerAuth(getToken())
+                setBody(request)
+            }.body<AltinnTilgangRespons>()
+            .also { respons ->
+                sikkerLogger.info("Hentet Altinntilganger for ${fnr.take(6)}XXXX med ${respons.hierarki.size} hovedenheter.")
 
-            httpClient
-                .post(urlString) {
-                    contentType(ContentType.Application.Json)
-                    bearerAuth(getToken())
-                    setBody(request)
-                }.body<AltinnTilgangRespons>()
-                .also { respons ->
-                    sikkerLogger.info("Hentet Altinntilganger for ${fnr.take(6)}XXXX med ${respons.hierarki.size} hovedenheter.")
-                }
-        }
+                return respons
+            }
+    }
 
     suspend fun hentTilganger(fnr: String): Set<String> =
-        hentHierarkiMedTilganger(fnr).let {
-            val altinn2Tilganger =
-                it.organisasjonerMedAltinn2Tilgang()
-            val altinn3Tilganger = it.organisasjonerMedAltinn3Tilgang()
-            val diffTilganger = altinn2Tilganger.minus(altinn3Tilganger)
-            sikkerLogger().info(
-                "Hentet altinn tilganger for ${fnr.take(6)}XXXXX: diff antall: ${diffTilganger.size}, diff: $diffTilganger",
-            )
-            altinn2Tilganger + altinn3Tilganger
+        cache.getOrPut(fnr) {
+            hentHierarkiMedTilganger(fnr).let {
+                val altinn3Tilganger = it.organisasjonerMedAltinn3Tilgang()
+                sikkerLogger().info(
+                    "Hentet altinn tilganger for ${fnr.take(6)}XXXXX: antall altinn3-tilganger: ${altinn3Tilganger.size}",
+                )
+                altinn3Tilganger
+            }
         }
-
-    fun AltinnTilgangRespons.organisasjonerMedAltinn2Tilgang(): Set<String> = tilgangTilOrgNr["$serviceCode:1"].orEmpty()
 
     fun AltinnTilgangRespons.organisasjonerMedAltinn3Tilgang(): Set<String> = tilgangTilOrgNr[ressurs.value].orEmpty()
 

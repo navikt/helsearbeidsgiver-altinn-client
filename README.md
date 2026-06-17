@@ -10,7 +10,6 @@ Dette brukes igjen for tilgangskontroll i diverse backend applikasjoner feks [fr
 ```kotlin
         val altinnKlient = Altinn3OBOClient(
             baseUrl = "http://arbeidsgiver-altinn-tilganger.fager",
-            serviceCode = "4936",
             ressurs = Altinn3Ressurs.FRITAKAGP,
             cacheConfig = LocalCache.Config(60.minutes, 250)
         )
@@ -21,7 +20,6 @@ Dette brukes igjen for tilgangskontroll i diverse backend applikasjoner feks [fr
 ```kotlin
         val altinnKlient = Altinn3M2MClient(
             baseUrl = "http://arbeidsgiver-altinn-tilganger.fager",
-            serviceCode = "4936",
             ressurs = Altinn3Ressurs.FRITAKAGP,
             cacheConfig = LocalCache.Config(60.minutes, 250),
             getToken = {"Entra token"}

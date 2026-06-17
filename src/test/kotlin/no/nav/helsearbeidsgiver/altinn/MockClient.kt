@@ -21,7 +21,7 @@ fun mockAltinn3M2MClient(
     scheduler: TestCoroutineScheduler? = null,
 ): Altinn3M2MClient =
     mockClient(responses.toList(), scheduler) {
-        Altinn3M2MClient("url", "4936", Altinn3Ressurs.INNTEKTSMELDING, LocalCache.Config(Duration.ZERO, 1)) { "" }
+        Altinn3M2MClient("url", Altinn3Ressurs.INNTEKTSMELDING, LocalCache.Config(Duration.ZERO, 1)) { "" }
     }
 
 fun mockAltinn3OBOClient(
@@ -29,7 +29,7 @@ fun mockAltinn3OBOClient(
     scheduler: TestCoroutineScheduler? = null,
 ): Altinn3OBOClient =
     mockClient(responses.toList(), scheduler) {
-        Altinn3OBOClient("url", "4936", Altinn3Ressurs.INNTEKTSMELDING, LocalCache.Config(Duration.ZERO, 1))
+        Altinn3OBOClient("url", Altinn3Ressurs.INNTEKTSMELDING, LocalCache.Config(Duration.ZERO, 1))
     }
 
 private fun <T : Any> mockClient(
