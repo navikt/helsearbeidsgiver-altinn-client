@@ -30,7 +30,7 @@ class Altinn3M2MClient(
 
     private val tilgangFilter = Filter(altinn2Tilganger = emptySet(), altinn3Tilganger = setOf(ressurs.value))
 
-    suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons {
+    internal suspend fun hentHierarkiMedTilganger(fnr: String): AltinnTilgangRespons {
         sikkerLogger.info("Henter Altinntilganger fra Fager sitt m2m-endepunkt for ${fnr.take(6)}XXXX")
         val request = TilgangM2MRequest(fnr, tilgangFilter)
         httpClient
